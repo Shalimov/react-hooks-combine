@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
 import {
-  toReuseFn,
+  toCombineFn,
   isFunction,
   compose,
 } from '../utils'
 
-export const reuseStateHandlers = (getState, actionHandlers) =>
-  toReuseFn((props) => {
+export const withStateHandlers = (getState, actionHandlers) =>
+  toCombineFn((props) => {
     const initialState = isFunction(getState) ? getState(props) : getState
     const [state, updater] = useState(initialState)
     const actionHandlersWithState = {}

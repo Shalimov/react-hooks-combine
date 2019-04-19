@@ -1,4 +1,4 @@
-const REUSE_FN_SIGIL = Symbol('reuse_fn')
+const COMBINE_FN_SIGIL = Symbol('combine_fn')
 const FORWARD_PROPS_FN_SIGIL = Symbol('forward_props_fn')
 
 const CTOR_PATTERN = /\[object\s(\w+)\]/;
@@ -17,14 +17,14 @@ export const isPromiseLike = value => {
   )
 }
 export const isFunction = fn => getInternalCtor(fn) === 'Function'
-export const isReuseFn = fn => fn[REUSE_FN_SIGIL] === true
+export const isCombineFn = fn => fn[COMBINE_FN_SIGIL] === true
 
-export const toReuseFn = (fn) => {
+export const toCombineFn = (fn) => {
   if (!isFunction(fn)) {
     return fn
   }
 
-  fn[REUSE_FN_SIGIL] = true;
+  fn[COMBINE_FN_SIGIL] = true;
   return Object.freeze(fn)
 }
 

@@ -1,14 +1,14 @@
-import { isReuseFn } from './utils'
+import { isCombineFn } from './utils'
 
-export const hookBuilder = (reuseFuncs) => {
-  if (!reuseFuncs.every(isReuseFn)) {
-    const blackSheep = reuseFuncs.find(fn => !isReuseFn(fn))
+export const hookBuilder = (combineFuncs) => {
+  if (!combineFuncs.every(isCombineFn)) {
+    const blackSheep = combineFuncs.find(fn => !isCombineFn(fn))
     throw Error(`Hacked ${blackSheep.name}`)
   }
 
   const FuncCtor = Function
 
-  const body = reuseFuncs.map((_fn, index) => `
+  const body = combineFuncs.map((_fn, index) => `
     const state${index + 1} = {
       ...state${index},
       ...funcs[${index}](state${index}, props),
@@ -18,12 +18,12 @@ export const hookBuilder = (reuseFuncs) => {
   const template = `
     const state0 = {};
     ${body}
-    return state${reuseFuncs.length};
+    return state${combineFuncs.length};
   `
 
   return new FuncCtor(
     'funcs',
     'props',
     template
-  ).bind(null, reuseFuncs)
+  ).bind(null, combineFuncs)
 }

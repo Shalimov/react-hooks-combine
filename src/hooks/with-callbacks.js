@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 
 import {
-  toReuseFn,
+  toCombineFn,
   isFunction,
   isForwardPropsFn,
 } from '../utils'
 
-export const reuseCallbacks = (callbacks, dependencies = []) =>
-  toReuseFn((state, props = {}) => {
+export const withCallbacks = (callbacks, dependencies = []) =>
+  toCombineFn((state, props = {}) => {
     const memoizedCallbacks = {}
 
     const deps = dependencies.map(key => props[key])

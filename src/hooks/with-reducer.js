@@ -1,8 +1,8 @@
 import { useReducer } from 'react'
 
-import { toReuseFn } from '../utils'
+import { toCombineFn } from '../utils'
 
-export const reuseReducer = (reducerFn, stateName, dispatchName, initialState) => toReuseFn(() => {
+export const withReducer = (reducerFn, stateName, dispatchName, initialState) => toCombineFn(() => {
   const [state, dispatch] = useReducer(reducerFn, initialState)
   return { [stateName]: state, [dispatchName]: dispatch }
 })
