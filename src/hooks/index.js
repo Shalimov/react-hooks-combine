@@ -1,19 +1,23 @@
-import { reuseStateHandlers } from './reuse-state-handlers'
-import { reuseDefaultProps } from './reuse-default-props'
-import { reuseCallbacks } from './reuse-callbacks'
-import { reuseContext } from './reuse-context'
-import { reuseReducer } from './reuse-reducer'
-import { reuseEffect } from './reuse-effect'
-import { reuseState } from './reuse-state'
-import { reuseRef } from './reuse-ref'
+import { withStateHandlers } from './with-state-handlers'
+import { withDefaultProps } from './with-default-props'
+import { withFilterProps } from './with-filter-props'
+import { withCallbacks } from './with-callbacks'
+import { withMapProps } from './with-map-props'
+import { withContext } from './with-context'
+import { withReducer } from './with-reducer'
+import { withEffect } from './with-effect'
+import { withState } from './with-state'
+import { withRef } from './with-ref'
 
 export {
-  reuseStateHandlers,
-  reuseDefaultProps,
-  reuseCallbacks,
-  reuseContext,
-  reuseReducer,
-  reuseEffect,
-  reuseState,
-  reuseRef,
+  withStateHandlers,
+  withDefaultProps,
+  withFilterProps,
+  withCallbacks,
+  withMapProps,
+  withContext,
+  withReducer,
+  withEffect,
+  withState,
+  withRef,
 }

@@ -1,13 +1,13 @@
 import React from 'react'
 
 import { hookBuilder } from './hook-builder'
-import { isReuseFn } from './utils'
+import { isCombineFn } from './utils'
 
-export const reuse = (...hooks) => (Component) => {
+export const combine = (...hooks) => (Component) => {
   let innerPropsRef = null
   let hooksComposition = null
 
-  const isInitFunc = (hooks.length === 1 && !isReuseFn(hooks[0]))
+  const isInitFunc = (hooks.length === 1 && !isCombineFn(hooks[0]))
 
   if (isInitFunc) {
     const forwardProps = fn => (...args) => fn(innerPropsRef, ...args)

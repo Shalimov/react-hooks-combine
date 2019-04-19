@@ -1,8 +1,8 @@
 {
-  "name": "reuse",
+  "name": "react-hooks-combine",
   "version": "1.0.0",
   "main": "src/index.js",
-  "repository": "git@github.com:Shalimov/reuse.git",
+  "repository": "git@github.com:Shalimov/react-hooks-combine.git",
   "license": "MIT",
   "private": false
 }

@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 
-import { toReuseFn } from '../utils'
+import { toCombineFn } from '../utils'
 
-export const reuseContext = (Context, contextName) => toReuseFn(() => {
+export const withContext = (Context, contextName) => toCombineFn(() => {
   const context = useContext(Context)
   return { [contextName]: context }
 })
