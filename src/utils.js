@@ -1,6 +1,3 @@
-const COMBINE_FN_SIGIL = Symbol('combine_fn')
-const FORWARD_PROPS_FN_SIGIL = Symbol('forward_props_fn')
-
 const CTOR_PATTERN = /\[object\s(\w+)\]/;
 
 const getInternalCtor = value => {
@@ -17,16 +14,6 @@ export const isPromiseLike = value => {
   )
 }
 export const isFunction = fn => getInternalCtor(fn) === 'Function'
-export const isCombineFn = fn => fn[COMBINE_FN_SIGIL] === true
-
-export const toCombineFn = (fn) => {
-  if (!isFunction(fn)) {
-    return fn
-  }
-
-  fn[COMBINE_FN_SIGIL] = true;
-  return Object.freeze(fn)
-}
 
 export const compose = (...fns) => (
   fns.reduce((prevFn, nextFn) => (
@@ -34,25 +21,6 @@ export const compose = (...fns) => (
   ))
 )
 
-export const toForwardPropsFn = fn => {
-  if (!isFunction(fn)) {
-    return fn
-  }
-
-  fn[FORWARD_PROPS_FN_SIGIL] = true
-  return Object.freeze(fn)
-}
-
-export const isForwardPropsFn = fn => fn[FORWARD_PROPS_FN_SIGIL] === true
-
-export const forwardProps = callback => {
-  if (!isFunction(callback)) {
-    return callback
-  }
-
-  const forwardPropsFn = (props) => {
-    return callback.bind(null, props)
-  }
-
-  return toForwardPropsFn(forwardPropsFn)
-}
+export const getDeps = (source, depsNames) => Array.isArray(depsNames) ?
+  depsNames.map(dep => source[dep]) :
+  depsNames

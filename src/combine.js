@@ -1,32 +1,16 @@
 import React from 'react'
 
 import { hookBuilder } from './hook-builder'
-import { isCombineFn } from './utils'
 
 export const combine = (...hooks) => (Component) => {
-  let innerPropsRef = null
-  let hooksComposition = null
+  const hooksComposition = hookBuilder(hooks)
 
-  const isInitFunc = (hooks.length === 1 && !isCombineFn(hooks[0]))
-
-  if (isInitFunc) {
-    const forwardProps = fn => (...args) => fn(innerPropsRef, ...args)
-
-    const initFunc = hooks[0];
-    const extHooks = initFunc(forwardProps)
-
-    hooksComposition = hookBuilder(extHooks)
-  } else if (hooks.length > 0) {
-    hooksComposition = hookBuilder(hooks)
+  const ExtendedComponent = (props) => {
+    const state = hooksComposition(props)
+    return <Component {...props} {...state} />
   }
 
-  const DisplayNameHooked = (props) => {
-    innerPropsRef = props;
+  ExtendedComponent.displayName = `${Component.displayName || Component.name}Hooked`
 
-    const hookProps = hooksComposition(props)
-
-    return <Component {...props} {...hookProps} />
-  }
-
-  return DisplayNameHooked
+  return ExtendedComponent
 }

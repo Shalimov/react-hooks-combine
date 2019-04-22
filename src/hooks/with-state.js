@@ -1,8 +1,6 @@
 import { useState } from 'react'
 
-import { toCombineFn } from '../utils'
-
-export const withState = (stateName, handler, initialState) => toCombineFn(() => {
+export const withState = (stateName, handler, initialState) => () => {
   const [state, updater] = useState(initialState)
   return { [stateName]: state, [handler]: updater }
-})
+}

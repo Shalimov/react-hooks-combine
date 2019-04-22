@@ -1,28 +1,19 @@
 import { useCallback } from 'react'
 
-import {
-  toCombineFn,
-  isFunction,
-  isForwardPropsFn,
-} from '../utils'
+import { getDeps } from '../utils'
 
-export const withCallbacks = (callbacks, dependencies = []) =>
-  toCombineFn((state, props = {}) => {
-    const memoizedCallbacks = {}
+export const withCallbacks = (callbacks, dependencies) => (state, props) => {
+  const memoizedCallbacks = {}
+  const deps = getDeps(props, dependencies)
 
-    const deps = dependencies.map(key => props[key])
+  for (const [key, callback] of Object.entries(callbacks)) {
+    memoizedCallbacks[key] = useCallback(callback(state, props), deps)
+  }
 
-    for (const key of Object.keys(callbacks)) {
-      if (!isFunction(callbacks[key])) {
-        continue
-      }
+  return memoizedCallbacks
+}
 
-      if (isForwardPropsFn(callbacks[key])) {
-        memoizedCallbacks[key] = useCallback(callbacks[key]({ ...state, ...props }), deps)
-      } else {
-        memoizedCallbacks[key] = useCallback(callbacks[key], deps)
-      }
-    }
-
-    return { ...memoizedCallbacks }
-  })
+export const withCallback = (callbackName, callback, dependencies) => (state, props) => {
+  const deps = getDeps(props, dependencies)
+  return { [callbackName]: useCallback(callback(state, props), deps) }
+}

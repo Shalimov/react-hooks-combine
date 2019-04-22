@@ -1,8 +1,6 @@
 import { useRef } from 'react'
 
-import { toCombineFn } from '../utils'
-
-export const withRef = (refName, initialValue) => toCombineFn(() => {
+export const withRef = (refName, initialValue) => () => {
   const ref = useRef(initialValue)
   return { [refName]: ref }
-})
+}

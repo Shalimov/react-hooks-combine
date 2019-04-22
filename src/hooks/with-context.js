@@ -1,8 +1,6 @@
 import { useContext } from 'react'
 
-import { toCombineFn } from '../utils'
-
-export const withContext = (Context, contextName) => toCombineFn(() => {
+export const withContext = (Context, contextName) => () => {
   const context = useContext(Context)
   return { [contextName]: context }
-})
+}

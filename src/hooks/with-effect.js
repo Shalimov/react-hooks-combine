@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 
-import { toCombineFn } from '../utils'
+import { getDeps } from '../utils'
 
-export const withEffect = (fn, memoizedProps) => toCombineFn((state) => {
-  useEffect(fn.bind(null, state), memoizedProps)
-})
+export const withEffect = (fn, dependencies) => (state, props) => {
+  const deps = getDeps(props, dependencies)
+  useEffect(fn.bind(null, state, props), deps)
+}

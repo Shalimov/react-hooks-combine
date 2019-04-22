@@ -1,9 +1,13 @@
-import { isCombineFn } from './utils'
+import { isFunction } from './utils'
 
 export const hookBuilder = (combineFuncs) => {
-  if (!combineFuncs.every(isCombineFn)) {
-    const blackSheep = combineFuncs.find(fn => !isCombineFn(fn))
-    throw Error(`Hacked ${blackSheep.name}`)
+  const blackSheepIndex = combineFuncs.findIndex(fn => !isFunction(fn))
+  if (blackSheepIndex !== - 1) {
+    throw Error(`
+      Expects function,
+      got a: ${typeof combineFuncs[blackSheepIndex]}
+      on index: ${blackSheepIndex}
+    `)
   }
 
   const FuncCtor = Function
