@@ -1,6 +1,6 @@
 const CTOR_PATTERN = /\[object\s(\w+)\]/;
 
-const getInternalCtor = value => {
+export const getInternalCtor = value => {
   const fullTypeDesc = Object.prototype.toString.call(value)
   const [, internalClass] = fullTypeDesc.match(CTOR_PATTERN)
 
