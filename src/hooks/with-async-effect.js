@@ -4,7 +4,7 @@ import { getDeps, isFunction, isPromiseLike, getInternalCtor } from '../utils'
 
 export const withAsyncEffect = (asyncCallback, deps, unmountCallback) => (state, props) => {
   if (!isFunction(asyncCallback)) {
-    throw Error(`withAsyncEffect expects function, got a: ${typeof asyncCallback}`)
+    throw Error(`withAsyncEffect expects function, got a: ${getInternalCtor(asyncCallback)}`)
   }
 
   const [data, setData] = useState({ loading: true, data: null })
