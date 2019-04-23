@@ -32,7 +32,7 @@ export const getDeps = (source, depsNames) => Array.isArray(depsNames) ?
 
 export const defaultProps = props => Component => {
   if (typeof props !== 'object') {
-    throw Error(`defaultProps expects object, got a ${typeof props}`)
+    throw Error(`defaultProps expects object, got a ${getInternalCtor(props)}`)
   }
   Component.defaultProps = props
   return Component
@@ -40,7 +40,7 @@ export const defaultProps = props => Component => {
 
 export const propTypes = props => Component => {
   if (typeof props !== 'object') {
-    throw Error(`propTypes expects object, got a ${typeof props}`)
+    throw Error(`propTypes expects object, got a ${getInternalCtor(props)}`)
   }
   Component.propTypes = props
   return Component
