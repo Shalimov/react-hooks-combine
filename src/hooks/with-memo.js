@@ -17,11 +17,11 @@ export const withMemos = config => (state, props) => {
   return memoizedValues
 }
 
-export const withMemo = (memoisedName, callback, deps) => (state, props) => {
+export const withMemo = (memoizedName, callback, deps) => (state, props) => {
   const memoizedValue = useMemo(
     () => callback(state, props),
     getDeps({ ...state, ...props }, deps)
   )
 
-  return { [memoisedName]: memoizedValue }
+  return { [memoizedName]: memoizedValue }
 }
