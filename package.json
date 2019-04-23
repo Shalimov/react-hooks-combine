@@ -24,10 +24,5 @@
     "rollup-plugin-node-resolve": "^4.2.3",
     "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-uglify": "^6.0.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn build"
-    }
   }
 }
