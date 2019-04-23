@@ -1,6 +1,6 @@
 const CTOR_PATTERN = /\[object\s(\w+)\]/;
 
-const getInternalCtor = value => {
+export const getInternalCtor = value => {
   const fullTypeDesc = Object.prototype.toString.call(value)
   const [, internalClass] = fullTypeDesc.match(CTOR_PATTERN)
 
@@ -24,3 +24,27 @@ export const compose = (...fns) => (
 export const getDeps = (source, depsNames) => Array.isArray(depsNames) ?
   depsNames.map(dep => source[dep]) :
   depsNames
+
+export const defaultProps = props => Component => {
+  if (typeof props !== 'object') {
+    throw Error(`defaultProps expects object, got a ${getInternalCtor(props)}`)
+  }
+
+  Component.defaultProps = props
+
+  return Component
+}
+
+export const propTypes = props => Component => {
+  if (typeof props !== 'object') {
+    throw Error(`propTypes expects object, got a ${getInternalCtor(props)}`)
+  }
+
+  Component.propTypes = props
+
+  return Component
+}
+
+export const flow = (...callbacks) => Component => {
+  return callbacks.reduce((Component, callback) => callback(Component), Component)
+}

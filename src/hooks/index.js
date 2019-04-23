@@ -1,5 +1,6 @@
-import { withStateHandlers } from './with-state-handlers'
 import { withCallbacks, withCallback } from './with-callbacks'
+import { withStateHandlers } from './with-state-handlers'
+import { withAsyncEffect } from './with-async-effect'
 import { withContext } from './with-context'
 import { withReducer } from './with-reducer'
 import { withEffect } from './with-effect'
@@ -8,6 +9,7 @@ import { withRef } from './with-ref'
 
 export {
   withStateHandlers,
+  withAsyncEffect,
   withCallbacks,
   withCallback,
   withContext,
