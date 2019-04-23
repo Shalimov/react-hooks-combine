@@ -22,9 +22,9 @@ export const compose = (...fns) => (
   ))
 )
 
-export const isCombineConfigMode = (args) => {
-  return args.length === 1 && isObject(args[0])
-}
+export const isCombineConfigMode = (args) => (
+  args.length === 1 && isObject(args[0])
+)
 
 export const getDeps = (source, depsNames) => Array.isArray(depsNames) ?
   depsNames.map(dep => source[dep]) :
