@@ -14,6 +14,7 @@ export const isPromiseLike = value => {
   )
 }
 export const isFunction = fn => getInternalCtor(fn) === 'Function'
+export const isObject = obj => getInternalCtor(obj) === 'Object'
 
 export const compose = (...fns) => (
   fns.reduce((prevFn, nextFn) => (
@@ -21,27 +22,27 @@ export const compose = (...fns) => (
   ))
 )
 
+export const isCombineConfigMode = (args) => {
+  return args.length === 1 && isObject(args[0])
+}
+
 export const getDeps = (source, depsNames) => Array.isArray(depsNames) ?
   depsNames.map(dep => source[dep]) :
   depsNames
 
 export const defaultProps = props => Component => {
   if (typeof props !== 'object') {
-    throw Error(`defaultProps expects object, got a ${getInternalCtor(props)}`)
+    throw Error(`defaultProps expects object, got a ${typeof props}`)
   }
-
   Component.defaultProps = props
-
   return Component
 }
 
 export const propTypes = props => Component => {
   if (typeof props !== 'object') {
-    throw Error(`propTypes expects object, got a ${getInternalCtor(props)}`)
+    throw Error(`propTypes expects object, got a ${typeof props}`)
   }
-
   Component.propTypes = props
-
   return Component
 }
 
