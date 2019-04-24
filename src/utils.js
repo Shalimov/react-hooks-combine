@@ -13,13 +13,17 @@ export const isPromiseLike = value => {
     (isFunction(value.then) && isFunction(value.catch))
   )
 }
+
 export const isFunction = fn => getInternalCtor(fn) === 'Function'
+export const isObject = obj => getInternalCtor(obj) === 'Object'
 
 export const compose = (...fns) => (
   fns.reduce((prevFn, nextFn) => (
     (...args) => prevFn(nextFn(...args))
   ))
 )
+
+export const isCombineConfigMode = args => isObject(args[0])
 
 export const getDeps = (source, depsNames) => Array.isArray(depsNames) ?
   depsNames.map(dep => source[dep]) :
@@ -34,6 +38,8 @@ export const defaultProps = props => Component => {
 
   return Component
 }
+
+export const identity = value => value
 
 export const propTypes = props => Component => {
   if (typeof props !== 'object') {
