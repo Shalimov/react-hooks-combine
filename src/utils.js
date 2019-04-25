@@ -1,7 +1,8 @@
 const CTOR_PATTERN = /\[object\s(\w+)\]/;
+const baseToString = Object.prototype.toString
 
 export const getInternalCtor = value => {
-  const fullTypeDesc = Object.prototype.toString.call(value)
+  const fullTypeDesc = baseToString.call(value)
   const [, internalClass] = fullTypeDesc.match(CTOR_PATTERN)
 
   return internalClass
@@ -40,16 +41,6 @@ export const defaultProps = props => Component => {
 }
 
 export const identity = value => value
-
-export const propTypes = props => Component => {
-  if (typeof props !== 'object') {
-    throw Error(`propTypes expects object, got a ${getInternalCtor(props)}`)
-  }
-
-  Component.propTypes = props
-
-  return Component
-}
 
 export const flow = (...callbacks) => Component => {
   return callbacks.reduce((Component, callback) => callback(Component), Component)
