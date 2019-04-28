@@ -1,16 +1,13 @@
 import { useCallback } from 'react'
 
-import { getDeps } from '../utils'
+import { getDeps, unwindLoop } from '../utils'
 
-export const withCallbacks = (callbacks, dependencies) => (state, props) => {
-  const memoizedCallbacks = {}
-  const deps = getDeps(props, dependencies)
-
-  for (const [key, callback] of Object.entries(callbacks)) {
-    memoizedCallbacks[key] = useCallback(callback(state, props), deps)
+export const withCallbacks = (callbacks, dependencies) => {
+  const unrolledCalls = unwindLoop(useCallback, callbacks)
+  return (state, props) => {
+    const deps = getDeps({ ...state, ...props }, dependencies)
+    return unrolledCalls(state, props, deps)
   }
-
-  return memoizedCallbacks
 }
 
 export const withCallback = (callbackName, callback, dependencies) => (state, props) => {

@@ -2,19 +2,21 @@ import { useMemo } from 'react'
 
 import { getDeps } from '../utils'
 
-export const withMemos = config => (state, props) => {
-  const memoizedValues = {}
+export const withMemos = config => {
+  const FuncCtor = Function
 
-  const wrapFunc = func => () => func(state, props)
+  const invocations = Object.entries(config)
+    .map(([key]) => `box.${key} = useMemo(() => cfg.${key}.func(state, props), getDeps({ ...state, ...props }, cfg.${key}.deps));`)
+    .join('\n')
 
-  for (const [memoizedValue, memoizedConfig] of Object.entries(config)) {
-    memoizedValues[memoizedValue] = useMemo(
-      wrapFunc(memoizedConfig.func),
-      getDeps({ ...state, ...props }, memoizedConfig.deps)
-    )
-  }
+  const body = `
+    const box = {};
+    ${invocations}
+    return box
+  `
 
-  return memoizedValues
+  return new FuncCtor('useMemo', 'getDeps', 'cfg', 'state', 'props', body)
+    .bind(null, useMemo, getDeps, config)
 }
 
 export const withMemo = (memoizedName, callback, deps) => (state, props) => {

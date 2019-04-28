@@ -26,6 +26,22 @@ export const compose = (...fns) => (
 
 export const isCombineConfigMode = args => isObject(args[0])
 
+export const unwindLoop = (hook, funcDescriptions) => {
+  const FuncCtor = Function
+  const invocations = Object.entries(funcDescriptions)
+    .map(([key]) => `box.${key} = hook(fns.${key}(state, props), deps);`)
+    .join('\n')
+
+  const body = `
+    const box = {};
+    ${invocations}
+    return box
+  `
+
+  return new FuncCtor('hook', 'fns', 'state', 'props', 'deps', body)
+    .bind(null, hook, funcDescriptions)
+}
+
 export const getDeps = (source, depsNames) => Array.isArray(depsNames) ?
   depsNames.map(dep => source[dep]) :
   depsNames
