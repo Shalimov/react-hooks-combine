@@ -1,22 +1,15 @@
 import { useMemo } from 'react'
 
-import { getDeps } from '../utils'
+import { getDeps, unwindLoop, isFunction } from '../utils'
 
-export const withMemos = config => {
-  const FuncCtor = Function
+export const withMemos = (funcs, dependencies) => {
+  const unrolledLoop = unwindLoop((fnCfg, deps, state, props) => {
+    const activeFn = isFunction(fnCfg) ? fnCfg : fnCfg.func
+    const activeDeps = getDeps({ ...state, ...props }, fnCfg.deps || deps)
+    return useMemo(() => activeFn(state, props), activeDeps)
+  }, funcs)
 
-  const invocations = Object.entries(config)
-    .map(([key]) => `box.${key} = useMemo(() => cfg.${key}.func(state, props), getDeps({ ...state, ...props }, cfg.${key}.deps));`)
-    .join('\n')
-
-  const body = `
-    const box = {};
-    ${invocations}
-    return box
-  `
-
-  return new FuncCtor('useMemo', 'getDeps', 'cfg', 'state', 'props', body)
-    .bind(null, useMemo, getDeps, config)
+  return (state, props) => unrolledLoop(dependencies, state, props)
 }
 
 export const withMemo = (memoizedName, callback, deps) => (state, props) => {

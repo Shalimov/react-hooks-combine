@@ -26,10 +26,10 @@ export const compose = (...fns) => (
 
 export const isCombineConfigMode = args => isObject(args[0])
 
-export const unwindLoop = (hook, funcDescriptions) => {
+export const unwindLoop = (useCustomHook, funcDescriptions) => {
   const FuncCtor = Function
   const invocations = Object.entries(funcDescriptions)
-    .map(([key]) => `box.${key} = hook(fns.${key}(state, props), deps);`)
+    .map(([key]) => `box.${key} = useCustomHook(fns.${key}, deps, state, props);`)
     .join('\n')
 
   const body = `
@@ -38,12 +38,31 @@ export const unwindLoop = (hook, funcDescriptions) => {
     return box
   `
 
-  return new FuncCtor('hook', 'fns', 'state', 'props', 'deps', body)
-    .bind(null, hook, funcDescriptions)
+  return new FuncCtor('useCustomHook', 'fns', 'deps', 'state', 'props', body)
+    .bind(null, useCustomHook, funcDescriptions)
+}
+
+export const prop = (obj, path) => {
+  if (obj == null) {
+    return obj
+  }
+
+  let value = obj
+  const parts = path.split('.')
+
+  for (let part of parts) {
+    value = value && value[part]
+
+    if (!value) {
+      return undefined
+    }
+  }
+
+  return value
 }
 
 export const getDeps = (source, depsNames) => Array.isArray(depsNames) ?
-  depsNames.map(dep => source[dep]) :
+  depsNames.map(dep => prop(source, dep)) :
   depsNames
 
 export const defaultProps = props => Component => {

@@ -1,13 +1,15 @@
 import { useCallback } from 'react'
 
-import { getDeps, unwindLoop } from '../utils'
+import { getDeps, unwindLoop, isFunction } from '../utils'
 
 export const withCallbacks = (callbacks, dependencies) => {
-  const unrolledCalls = unwindLoop(useCallback, callbacks)
-  return (state, props) => {
-    const deps = getDeps({ ...state, ...props }, dependencies)
-    return unrolledCalls(state, props, deps)
-  }
+  const unrolledCalls = unwindLoop((fnCfg, deps, state, props) => {
+    const activeFn = isFunction(fnCfg) ? fnCfg : fnCfg.func
+    const activeDeps = getDeps({ ...state, ...props }, fnCfg.deps || deps)
+    return useCallback(activeFn(state, props), activeDeps)
+  }, callbacks)
+
+  return (state, props) => unrolledCalls(dependencies, state, props)
 }
 
 export const withCallback = (callbackName, callback, dependencies) => (state, props) => {
