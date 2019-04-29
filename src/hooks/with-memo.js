@@ -1,20 +1,15 @@
 import { useMemo } from 'react'
 
-import { getDeps } from '../utils'
+import { getDeps, unwindLoop, isFunction } from '../utils'
 
-export const withMemos = config => (state, props) => {
-  const memoizedValues = {}
+export const withMemos = (funcs, dependencies) => {
+  const unrolledLoop = unwindLoop((fnCfg, deps, state, props) => {
+    const activeFn = isFunction(fnCfg) ? fnCfg : fnCfg.func
+    const activeDeps = getDeps({ ...state, ...props }, fnCfg.deps || deps)
+    return useMemo(() => activeFn(state, props), activeDeps)
+  }, funcs)
 
-  const wrapFunc = func => () => func(state, props)
-
-  for (const [memoizedValue, memoizedConfig] of Object.entries(config)) {
-    memoizedValues[memoizedValue] = useMemo(
-      wrapFunc(memoizedConfig.func),
-      getDeps({ ...state, ...props }, memoizedConfig.deps)
-    )
-  }
-
-  return memoizedValues
+  return (state, props) => unrolledLoop(dependencies, state, props)
 }
 
 export const withMemo = (memoizedName, callback, deps) => (state, props) => {
