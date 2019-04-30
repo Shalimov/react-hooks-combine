@@ -8,7 +8,7 @@ export const withState = (stateName, handler, initialState) => {
     (_s, _p) => initialState
 
   return (state, props) => {
-    const [state, updater] = useState(initState(state, props))
-    return { [stateName]: state, [handler]: updater }
+    const [innerState, updater] = useState(initState(state, props))
+    return { [stateName]: innerState, [handler]: updater }
   }
 }

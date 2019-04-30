@@ -9,10 +9,10 @@ export const withAsyncEffect = (asyncCallback, deps, unmountCallback) => {
   }
 
   return (state, props) => {
-    const [data, setData] = useState({ loading: true, data: null })
+    const [innerState, setData] = useState({ loading: true, data: null })
   
     useEffect(() => {
-      setData({ data, loading: true })
+      setData({ data: innerState.data, loading: true })
   
       const promise = asyncCallback(state, props)
   
@@ -26,6 +26,6 @@ export const withAsyncEffect = (asyncCallback, deps, unmountCallback) => {
   
     }, getDeps({ ...state, ...props }, deps))
   
-    return data
+    return innerState
   }  
 }
