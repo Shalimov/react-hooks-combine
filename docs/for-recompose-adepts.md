@@ -1,18 +1,5 @@
 # For Recompose Adepts
 
-<style>
-  .comparison {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .divider {
-    height: 100%;
-    border-left: 1px solid #FFF;
-    margin: 4px;
-  }
-</style>
-
 API has smilarities to recompose library, in this guide we explain main difference between Recompose and React-Hooks-Combine
 
 Let's start with example:
