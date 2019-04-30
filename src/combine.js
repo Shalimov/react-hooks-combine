@@ -5,39 +5,35 @@ import { hookBuilder } from './hook-builder'
 import {
   isCombineConfigMode,
   defaultProps as withDefaultProps,
-  isFunction,
   identity,
+  flow,
 } from './utils'
 
-const combineFromConfig = config => Component => {
-  const { hooks, defaultProps, transformProps } = config
-  const hooksComposition = hookBuilder(hooks)
+const combineFromConfig = (config, Component) => {
+  const { hooks, hocs, defaultProps, transformProps } = Object.assign({
+    hooks: [],
+    hocs: [],
+    transformProps: identity
+  }, config)
 
-  const transformFunction = isFunction(transformProps) ? transformProps : identity
+  const hooksComposition = hookBuilder(hooks)
 
   if (defaultProps) {
     withDefaultProps(defaultProps)(Component)
   }
 
-  return (props) => {
+  const ExtendedComponent = (props) => {
     const state = hooksComposition(props)
-    return <Component {...transformFunction({ ...state, ...props })} />
+    return <Component {...transformProps({ ...state, ...props })} />
   }
+
+  return flow(...hocs)(ExtendedComponent)
 }
 
 export const combine = (...hooks) => (Component) => {
-  let ExtendedComponent = null
-
-  if (isCombineConfigMode(hooks)) {
-    ExtendedComponent = combineFromConfig(hooks[0])(Component)
-  } else {
-    const hooksComposition = hookBuilder(hooks)
-
-    ExtendedComponent = (props) => {
-      const state = hooksComposition(props)
-      return <Component {...props} {...state} />
-    }
-  }
+  const ExtendedComponent = isCombineConfigMode(hooks) ?
+    combineFromConfig(hooks[0], Component) :
+    combineFromConfig({ hooks }, Component)
 
   ExtendedComponent.displayName = `${Component.displayName || Component.name}Hooked`
 
