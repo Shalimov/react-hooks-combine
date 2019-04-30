@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { getDeps, isFunction, isPromiseLike, getInternalCtor } from '../utils'
 
+// Error handling should be done to cover failures
 export const withAsyncEffect = (asyncCallback, deps, unmountCallback) => {
   if (!isFunction(asyncCallback)) {
     throw Error(`withAsyncEffect expects function, got a: ${getInternalCtor(asyncCallback)}`)
@@ -11,7 +12,7 @@ export const withAsyncEffect = (asyncCallback, deps, unmountCallback) => {
     const [data, setData] = useState({ loading: true, data: null })
   
     useEffect(() => {
-      setData({ ...data, loading: true })
+      setData({ data, loading: true })
   
       const promise = asyncCallback(state, props)
   

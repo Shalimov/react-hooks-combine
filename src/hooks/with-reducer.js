@@ -1,6 +1,16 @@
 import { useReducer } from 'react'
 
-export const withReducer = (reducerFn, stateName, dispatchName, initialState) => () => {
-  const [state, dispatch] = useReducer(reducerFn, initialState)
-  return { [stateName]: state, [dispatchName]: dispatch }
+export const withReducer = (config) => {
+  const {
+    reducer,
+    stateName,
+    dispatchName,
+    initialState,
+    init,
+  } = { dispatchName: 'dispatch', ...config }
+
+  return () => {
+    const [state, dispatch] = useReducer(reducer, initialState, init)
+    return { [stateName]: state, [dispatchName]: dispatch }
+  }
 }
