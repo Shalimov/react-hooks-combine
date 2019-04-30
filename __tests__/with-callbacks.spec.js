@@ -79,31 +79,37 @@ describe('With Callbacks hook', () => {
 
   test('should works with callback', () => {
     let count = 0
-    const { result } = renderHook(
+    const { result, rerender } = renderHook(
       props => withCallbacks({
         increment: {
-          func: () => jest.fn(() => { count += 1 }),
+          func: () => () => { count += 1 },
           deps: ['value'],
         },
         decrement: {
-          func: () => jest.fn(() => { count -= 1 }),
-          deps: ['value'],
+          func: () => () => { count -= 1 },
+          deps: ['id'],
         },
       })(props, props),
       { initialProps: { id: 1, value: 'value' } },
     )
 
+    const initialIncrementCallback = result.current.increment
+    let initialDecrementCallback = result.current.decrement
+
     act(() => result.current.increment())
-    act(() => result.current.increment())
-    act(() => result.current.increment())
 
-    expect(result.current.increment.mock.calls.length).toBe(3)
-    expect(count).toBe(3)
+    rerender({ id: 2, value: 'value' })
 
-    act(() => result.current.decrement())
+    expect(initialIncrementCallback).toEqual(result.current.increment)
+    expect(initialDecrementCallback).not.toEqual(result.current.decrement)
 
-    expect(result.current.decrement.mock.calls.length).toBe(1)
+    initialDecrementCallback = result.current.decrement
 
-    expect(count).toBe(2)
+    rerender({ id: 2, value: 'value1' })
+
+    expect(initialIncrementCallback).not.toEqual(result.current.increment)
+    expect(initialDecrementCallback).toEqual(result.current.decrement)
+
+    expect(count).toBe(1)
   })
 })
