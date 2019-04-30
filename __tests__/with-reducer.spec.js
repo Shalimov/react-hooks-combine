@@ -25,7 +25,7 @@ describe('With Reducer hook', () => {
         reducer,
         stateName: 'counter',
         initialState,
-      })(),
+      })()
     )
 
     expect(result.current.counter.count).toBe(0)
@@ -53,7 +53,7 @@ describe('With Reducer hook', () => {
         stateName: 'counter',
         initialState,
         init,
-      })(),
+      })()
     )
 
     expect(result.current.counter.count).toBe(0)

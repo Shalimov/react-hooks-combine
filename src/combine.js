@@ -6,14 +6,14 @@ import {
   isCombineConfigMode,
   defaultProps as withDefaultProps,
   identity,
-  flow,
+  flow
 } from './utils'
 
 const combineFromConfig = (config, Component) => {
   const { hooks, hocs, defaultProps, transformProps } = Object.assign({
     hooks: [],
     hocs: [],
-    transformProps: identity
+    transformProps: identity,
   }, config)
 
   const hooksComposition = hookBuilder(hooks)

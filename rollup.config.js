@@ -2,7 +2,7 @@ import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import { uglify } from "rollup-plugin-uglify";
+import { uglify } from 'rollup-plugin-uglify';
 
 module.exports = {
   input: 'src/index.js',
@@ -19,9 +19,9 @@ module.exports = {
     }),
     babel({
       exclude: 'node_modules/**',
-      presets: [['@babel/env', { modules: false }], '@babel/preset-react']
+      presets: [['@babel/env', { modules: false }], '@babel/preset-react'],
     }),
     commonjs(),
     uglify(),
-  ]
+  ],
 };

@@ -19,5 +19,5 @@ export {
   withState,
   withMemos,
   withMemo,
-  withRef,
+  withRef
 }

@@ -9,7 +9,7 @@ describe('With State Handlers hook', () => {
       }, {
         increment: ({ count }) => () => ({ count: count + 1 }),
         decrement: ({ count }) => () => ({ count: count - 1 }),
-      })(),
+      })()
     )
 
     act(() => result.current.increment())
@@ -27,7 +27,7 @@ describe('With State Handlers hook', () => {
       () => withStateHandlers(({ count }) => ({ count }), {
         increment: ({ count }) => () => ({ count: count + 1 }),
         decrement: ({ count }) => () => ({ count: count - 1 }),
-      })({ count: 2 }),
+      })({ count: 2 })
     )
 
     act(() => result.current.increment())

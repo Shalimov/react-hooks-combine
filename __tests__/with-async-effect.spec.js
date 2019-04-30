@@ -13,7 +13,7 @@ describe('With Async Effect hook', () => {
     }
 
     const { result, unmount, waitForNextUpdate, rerender } = renderHook(
-      () => withAsyncEffect(asyncCallback, [], unmountCallback)(),
+      () => withAsyncEffect(asyncCallback, [], unmountCallback)()
     )
 
     expect(result.current.loading).toBe(true)

@@ -1,22 +1,20 @@
 const CTOR_PATTERN = /\[object\s(\w+)\]/;
 const baseToString = Object.prototype.toString
 
-export const getInternalCtor = value => {
+export const getInternalCtor = (value) => {
   const fullTypeDesc = baseToString.call(value)
   const [, internalClass] = fullTypeDesc.match(CTOR_PATTERN)
 
   return internalClass
 }
 
-export const isPromiseLike = value => {
-  return value && (
-    getInternalCtor(value) === 'Promise' ||
-    (isFunction(value.then) && isFunction(value.catch))
-  )
-}
-
 export const isFunction = fn => getInternalCtor(fn) === 'Function'
 export const isObject = obj => getInternalCtor(obj) === 'Object'
+
+export const isPromiseLike = value => value && (
+  getInternalCtor(value) === 'Promise' ||
+    (isFunction(value.then) && isFunction(value.catch))
+)
 
 export const compose = (...fns) => (
   fns.reduce((prevFn, nextFn) => (
@@ -50,7 +48,7 @@ export const prop = (obj, path) => {
   let value = obj
   const parts = path.split('.')
 
-  for (let part of parts) {
+  for (const part of parts) {
     value = value && value[part]
 
     if (!value) {
@@ -61,15 +59,16 @@ export const prop = (obj, path) => {
   return value
 }
 
-export const getDeps = (source, depsNames) => Array.isArray(depsNames) ?
+export const getDeps = (source, depsNames) => (Array.isArray(depsNames) ?
   depsNames.map(dep => prop(source, dep)) :
-  depsNames
+  depsNames)
 
-export const defaultProps = props => Component => {
+export const defaultProps = props => (Component) => {
   if (typeof props !== 'object') {
     throw Error(`defaultProps expects object, got a ${getInternalCtor(props)}`)
   }
 
+  // eslint-disable-next-line
   Component.defaultProps = props
 
   return Component
@@ -77,6 +76,5 @@ export const defaultProps = props => Component => {
 
 export const identity = value => value
 
-export const flow = (...callbacks) => Component => {
-  return callbacks.reduce((Component, callback) => callback(Component), Component)
-}
+// eslint-disable-next-line
+export const flow = (...callbacks) => Component => callbacks.reduce((Component, callback) => callback(Component), Component)

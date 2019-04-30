@@ -7,7 +7,7 @@ describe('With Memo hook', () => {
       ({ value }) => withMemo('memoValue', () => ({ value }), ['value'])({ value }, { value }),
       {
         initialProps: { value: 1 },
-      },
+      }
     )
 
     const { memoValue: value1 } = result.current
@@ -40,7 +40,7 @@ describe('With Memo hook', () => {
       })({ value }, { value }),
       {
         initialProps: { value: 1 },
-      },
+      }
     )
 
     const { memoValue1: value1 } = result.current
@@ -84,7 +84,7 @@ describe('With Memo hook', () => {
       }, ['value'])({ value }, { value }),
       {
         initialProps: { value: 1 },
-      },
+      }
     )
 
     const { memoValue1: value1 } = result.current
