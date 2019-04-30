@@ -15,6 +15,44 @@ describe('With Callbacks hook', () => {
     expect(count).toBe(10)
   })
 
+  test('should not create a new callback after rerender', () => {
+    let count = 0
+    const { result, rerender } = renderHook(
+      props => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
+      { initialProps: { step: 5 } },
+    )
+
+    const initialCallback = result.current.increment
+
+    act(() => result.current.increment())
+    act(() => result.current.increment())
+
+    rerender()
+
+    expect(initialCallback).toEqual(result.current.increment)
+
+    expect(count).toBe(10)
+  })
+
+  test('should create a new callback after rerender', () => {
+    let count = 0
+    const { result, rerender } = renderHook(
+      props => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
+      { initialProps: { step: 5 } },
+    )
+
+    const initialCallback = result.current.increment
+
+    act(() => result.current.increment())
+    act(() => result.current.increment())
+
+    rerender({ step: 6 })
+
+    expect(initialCallback).not.toEqual(result.current.increment)
+
+    expect(count).toBe(10)
+  })
+
   test('should increment and decrement counter by handlers', () => {
     let count = 0
     const { result } = renderHook(
@@ -22,6 +60,36 @@ describe('With Callbacks hook', () => {
         increment: () => jest.fn(() => { count += 1 }),
         decrement: () => jest.fn(() => { count -= 1 }),
       }, ['id'])(props, props),
+      { initialProps: { id: 1, value: 'value' } },
+    )
+
+    act(() => result.current.increment())
+    act(() => result.current.increment())
+    act(() => result.current.increment())
+
+    expect(result.current.increment.mock.calls.length).toBe(3)
+    expect(count).toBe(3)
+
+    act(() => result.current.decrement())
+
+    expect(result.current.decrement.mock.calls.length).toBe(1)
+
+    expect(count).toBe(2)
+  })
+
+  test('should works with callback', () => {
+    let count = 0
+    const { result } = renderHook(
+      props => withCallbacks({
+        increment: {
+          func: () => jest.fn(() => { count += 1 }),
+          deps: ['value'],
+        },
+        decrement: {
+          func: () => jest.fn(() => { count -= 1 }),
+          deps: ['value'],
+        },
+      })(props, props),
       { initialProps: { id: 1, value: 'value' } },
     )
 
