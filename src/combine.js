@@ -13,7 +13,7 @@ const combineFromConfig = (config, Component) => {
   const { hooks, hocs, defaultProps, transformProps } = Object.assign({
     hooks: [],
     hocs: [],
-    transformProps: identity
+    transformProps: identity,
   }, config)
 
   const hooksComposition = hookBuilder(hooks)
@@ -31,9 +31,9 @@ const combineFromConfig = (config, Component) => {
 }
 
 export const combine = (...hooks) => (Component) => {
-  const ExtendedComponent = isCombineConfigMode(hooks) ?
-    combineFromConfig(hooks[0], Component) :
-    combineFromConfig({ hooks }, Component)
+  const ExtendedComponent = isCombineConfigMode(hooks)
+    ? combineFromConfig(hooks[0], Component)
+    : combineFromConfig({ hooks }, Component)
 
   ExtendedComponent.displayName = `${Component.displayName || Component.name}Hooked`
 

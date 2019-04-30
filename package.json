@@ -9,7 +9,10 @@
     "build": "rollup --config",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "eslint": "./node_modules/eslint/bin/eslint.js",
+    "lint": "yarn eslint ./src/**/*.js",
+    "lint:fix": "yarn eslint ./src/**/*.js --fix"
   },
   "peerDependencies": {
     "react": "^16.8.6"

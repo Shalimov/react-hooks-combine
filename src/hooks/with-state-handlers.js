@@ -11,7 +11,7 @@ export const withStateHandlers = (getState, actionHandlers) => (state, props) =>
   for (const [key, actionHandler] of Object.entries(actionHandlers)) {
     actionHandlersWithState[key] = compose(
       assignToState,
-      actionHandler(localState)
+      actionHandler(localState),
     )
   }
 

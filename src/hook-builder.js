@@ -2,7 +2,7 @@ import { isFunction } from './utils'
 
 export const hookBuilder = (combineFuncs) => {
   const blackSheepIndex = combineFuncs.findIndex(fn => !isFunction(fn))
-  if (blackSheepIndex !== - 1) {
+  if (blackSheepIndex !== -1) {
     throw Error(`
       Expects function,
       got a: ${typeof combineFuncs[blackSheepIndex]}
@@ -28,6 +28,6 @@ export const hookBuilder = (combineFuncs) => {
   return new FuncCtor(
     'funcs',
     'props',
-    template
+    template,
   ).bind(null, combineFuncs)
 }
