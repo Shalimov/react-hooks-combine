@@ -1,6 +1,6 @@
 # React hooks combine
 
-[Hooks](https://reactjs.org/docs/hooks-intro.html) powered, recompose like utility belt for ladies and gentlemens.
+[Hooks](https://reactjs.org/docs/hooks-intro.html) powered, recompose like utility belt for ladies and gentlemen.
 
 ---
 
