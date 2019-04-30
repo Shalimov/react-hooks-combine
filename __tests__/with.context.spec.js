@@ -5,7 +5,7 @@ import { withContext } from '../src/hooks'
 describe('With Context hook', () => {
   test('should get default context value', () => {
     const TestContext = createContext('test_context')
-    const { result } = renderHook(() => withContext(TestContext, 'testContext')())
+    const { result } = renderHook(() => withContext('testContext', TestContext)())
 
     expect(result.current.testContext).toBe('test_context')
   })
@@ -19,7 +19,7 @@ describe('With Context hook', () => {
     )
     /* eslint-enable */
 
-    const { result } = renderHook(() => withContext(TestContext, 'testContext')(), { wrapper })
+    const { result } = renderHook(() => withContext('testContext', TestContext)(), { wrapper })
 
     expect(result.current.testContext).toBe('context_value')
   })

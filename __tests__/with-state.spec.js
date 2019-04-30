@@ -17,4 +17,10 @@ describe('With State hook', () => {
 
     expect(result.current.data).toEqual({ data: [{ id: 1, username: 'John' }], loading: false })
   })
+
+  test('should update complex state with initialState as func', () => {
+    const { result } = renderHook(() => withState('data', 'setData', ({ data, loading }) => ({ data, loading }))({ data: [{ id: 1, username: 'John' }], loading: false }))
+
+    expect(result.current.data).toEqual({ data: [{ id: 1, username: 'John' }], loading: false })
+  })
 })

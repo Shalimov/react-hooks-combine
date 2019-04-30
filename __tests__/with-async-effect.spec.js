@@ -12,7 +12,7 @@ describe('With Async Effect hook', () => {
       status = 'unmount'
     }
 
-    const { result, unmount, waitForNextUpdate } = renderHook(
+    const { result, unmount, waitForNextUpdate, rerender } = renderHook(
       () => withAsyncEffect(asyncCallback, [], unmountCallback)(),
     )
 
@@ -20,6 +20,13 @@ describe('With Async Effect hook', () => {
     expect(result.current.data).toBe(null)
 
     await waitForNextUpdate()
+
+    expect(result.current.loading).toBe(false)
+    expect(result.current.data).toBe('user_data')
+
+    expect(status).toBe('mount')
+
+    rerender()
 
     expect(result.current.loading).toBe(false)
     expect(result.current.data).toBe('user_data')

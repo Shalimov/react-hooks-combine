@@ -24,6 +24,11 @@ describe('With Effect hook', () => {
     expect(sideEffects[1]).toBe(false)
     expect(sideEffects[2]).toBe(true)
 
+    rerender()
+
+    expect(sideEffects[1]).toBe(false)
+    expect(sideEffects[2]).toBe(true)
+
     unmount()
 
     expect(sideEffects[1]).toBe(false)
