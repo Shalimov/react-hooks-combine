@@ -10,22 +10,22 @@ export const withAsyncEffect = (asyncCallback, deps, unmountCallback) => {
 
   return (state, props) => {
     const [innerState, setData] = useState({ loading: true, data: null })
-  
+
     useEffect(() => {
       setData({ data: innerState.data, loading: true })
-  
+
       const promise = asyncCallback(state, props)
-  
+
       if (!isPromiseLike(promise)) {
         throw Error(`withAsyncEffect expects Promise, got a: ${getInternalCtor(promise)}`)
       }
-  
+
       promise.then(result => setData({ loading: false, data: result }))
-  
+
       return unmountCallback
-  
+
     }, getDeps({ ...state, ...props }, deps))
-  
+
     return innerState
-  }  
+  }
 }
