@@ -26,6 +26,17 @@
     "padded-blocks": 0,
     "max-len": 0,
     "no-restricted-syntax": 0,
-    "react/jsx-filename-extension": 0
+    "react/jsx-filename-extension": 0,
+    "operator-linebreak": [
+      2,
+      "after"
+    ],
+    "comma-dangle": ["error", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "never",
+      "exports": "never",
+      "functions": "never"
+  }]
   }
 }

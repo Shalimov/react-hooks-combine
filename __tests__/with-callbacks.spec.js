@@ -6,7 +6,7 @@ describe('With Callbacks hook', () => {
     let count = 0
     const { result } = renderHook(
       props => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
-      { initialProps: { step: 5 } },
+      { initialProps: { step: 5 } }
     )
 
     act(() => result.current.increment())
@@ -19,7 +19,7 @@ describe('With Callbacks hook', () => {
     let count = 0
     const { result, rerender } = renderHook(
       props => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
-      { initialProps: { step: 5 } },
+      { initialProps: { step: 5 } }
     )
 
     const initialCallback = result.current.increment
@@ -38,7 +38,7 @@ describe('With Callbacks hook', () => {
     let count = 0
     const { result, rerender } = renderHook(
       props => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
-      { initialProps: { step: 5 } },
+      { initialProps: { step: 5 } }
     )
 
     const initialCallback = result.current.increment
@@ -60,7 +60,7 @@ describe('With Callbacks hook', () => {
         increment: () => jest.fn(() => { count += 1 }),
         decrement: () => jest.fn(() => { count -= 1 }),
       }, ['id'])(props, props),
-      { initialProps: { id: 1, value: 'value' } },
+      { initialProps: { id: 1, value: 'value' } }
     )
 
     act(() => result.current.increment())
@@ -90,7 +90,7 @@ describe('With Callbacks hook', () => {
           deps: ['id'],
         },
       })(props, props),
-      { initialProps: { id: 1, value: 'value' } },
+      { initialProps: { id: 1, value: 'value' } }
     )
 
     const initialIncrementCallback = result.current.increment

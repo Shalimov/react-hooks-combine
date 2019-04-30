@@ -6,7 +6,7 @@ import {
   isCombineConfigMode,
   defaultProps as withDefaultProps,
   identity,
-  flow,
+  flow
 } from './utils'
 
 const combineFromConfig = (config, Component) => {
@@ -31,9 +31,9 @@ const combineFromConfig = (config, Component) => {
 }
 
 export const combine = (...hooks) => (Component) => {
-  const ExtendedComponent = isCombineConfigMode(hooks)
-    ? combineFromConfig(hooks[0], Component)
-    : combineFromConfig({ hooks }, Component)
+  const ExtendedComponent = isCombineConfigMode(hooks) ?
+    combineFromConfig(hooks[0], Component) :
+    combineFromConfig({ hooks }, Component)
 
   ExtendedComponent.displayName = `${Component.displayName || Component.name}Hooked`
 

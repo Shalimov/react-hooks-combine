@@ -11,8 +11,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "eslint": "./node_modules/eslint/bin/eslint.js",
-    "lint": "yarn eslint ./src/**/*.js",
-    "lint:fix": "yarn eslint ./src/**/*.js --fix"
+    "lint": "yarn eslint ./src",
+    "lint:fix": "yarn eslint ./src --fix"
   },
   "peerDependencies": {
     "react": "^16.8.6"

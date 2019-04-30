@@ -25,9 +25,6 @@ export const hookBuilder = (combineFuncs) => {
     return state${combineFuncs.length};
   `
 
-  return new FuncCtor(
-    'funcs',
-    'props',
-    template,
-  ).bind(null, combineFuncs)
+  return new FuncCtor('funcs', 'props', template)
+    .bind(null, combineFuncs)
 }

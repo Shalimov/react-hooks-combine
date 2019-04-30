@@ -13,7 +13,7 @@ describe('With Effect hook', () => {
           sideEffects[id] = false
         }
       }, ['id'])({}, { id }),
-      { initialProps: { id: 1 } },
+      { initialProps: { id: 1 } }
     )
 
     expect(sideEffects[1]).toBe(true)
