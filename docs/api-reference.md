@@ -46,7 +46,7 @@ combine(config: CombineConfig) -> HigherOrderComponent
 
 Combines [custom hook](https://reactjs.org/docs/hooks-custom.html) creators into single [custom hook](https://reactjs.org/docs/hooks-custom.html) and wrap original component to invoke the custom hook and pass values of it as props to inner one.
 
-NB!: It's different from [recompose](https://github.com/acdlite/recompose) `compose` function because __`combine`__ wraps component only once per any number of provided hooks while `compose` wraps component as many times as hocs are included
+__NB!__: It's different from [recompose](https://github.com/acdlite/recompose) `compose` function because __`combine`__ wraps component only once per any number of provided hooks while `compose` wraps component as many times as hocs are included
 
 As you can see above: two types of params are accepted:
 - list of custom hook creators (withState, withCallbacks and so on)
@@ -74,7 +74,7 @@ const EnhancedButton = combine(
       console.log(props) // some props
     }
   }, ['someState'])
-)
+)(Button)
 
 export default EnhancedButton
 ```
@@ -110,16 +110,182 @@ const EnhancedButton = combine({
 
   // props contains state and props
   transformProps: props => _.pick(props, ['data', 'applicationState', 'animated', 'type'])
-})
+})(Button)
 
 export default EnhancedButton
 ```
-
 
 ## <a name="hookWrappers"></a>__Hook Wrappers__
 
 ### <a name="withState"></a>__`withState()`__
 
+```javascript
+withState(stateName: string, updateFn: string, initialValue: any | Function(state: Object, props: Object) -> any)
+```
+
+Creates local state and update function by using [useState](https://reactjs.org/docs/hooks-reference.html#usestate) hook.
+3td parameter can accept any value as initial state or function that inits state lazily.
+
+__NB!__: The initialState argument is the state used during the initial render. In subsequent renders, it is disregarded. If the initial state is the result of an expensive computation, you may provide a function instead, which will be executed only on the initial render.
+
+__Example__
+
+```javascript
+import { combine, withState } from 'react-hooks-combine'
+
+import { Panel } from './component.jsx'
+
+const EnhancedPanel = combine(
+  withState('stateValue1', 'setStateValue1', 'Hello State Value 1'),
+  withState('stateValue2', 'setStateValue2', (state, props) => {
+    // will be invoked only once
+    console.log(props) // component ownProps
+    console.log(state) // { stateValue1: Hello State Value 1 }
+    return someExpensiveComputation(state, props)
+  })
+)(Panel)
+
+export default EnhancedPanel
+```
+
 ### <a name="withStateHandlers"></a>__`withStateHandlers()`__
 
+```javascript
+withStateHandlers(
+  initialState: Object | Function(state: Object, props: Object) -> Object,
+  stateUpdaters: {
+    [key: string]: Function(state: Object, props: Object) -> Function(...payload: any[]) -> Object
+  }
+)
+```
+
+Passes state object properties and immutable updater functions in a form of `Function(...payload: any[]) -> Object` to the wrapped component.
+
+Every state updater function accepts state, props and payload and must return a new state or undefined. The new state is shallowly merged with the previous state. Returning undefined does not cause a component rerender.
+
+__Example__
+
+```javascript
+
+import { combine, withStateHandlers } from 'react-hooks-combine'
+
+import { Panel } from './component.jsx'
+
+const EnhancedPanel = combine(
+  withStateHandlers({
+    collapsed: false,
+    loading: false,
+    data: null,
+  }, {
+    expand: () => () => ({ collapsed: false }),
+    collapse: () => () => ({ collapsed: true }),
+    setLoadingState: () => loading => ({ loading }),
+    setData: () => data => ({ data })
+  }),
+  withCallbacks({
+    onCollapse: (state, props) => () => {
+      if (props.canBeCollapsed) {
+        state.collapse()
+      }
+    },
+    ...
+  })
+)(Panel)
+
+export default EnhancedPanel
+```
+
 ### <a name="withReducer"></a>__`withReducer()`__
+
+```javascript
+withReducer<S, A>(
+  config: {
+    reducer: Function(state: S, action: any) -> S,
+    stateName: string,
+    dispatchName: string, // 'dispatch' by default
+    initialState: S,
+    init: Function(S) -> S,
+  }
+)
+```
+
+An alternative to [`withState()`](#withState). Accepts a config object with required properties such as:
+- reducer of type Function(state, action) -> newState
+- stateName - will be found in result state object by provided name
+- dispatchName (dispatch by default) - will be found in result state object by provided name
+- initialState - complex initial state
+- init - lazy state initializer function
+
+Returns the current state paired with a dispatch method.
+
+[`withReducer`](#withReducer) is usually preferable to useState when you have complex state logic that involves multiple sub-values or when the next state depends on the previous one. useReducer also lets you optimize performance for components that trigger deep updates because you can pass dispatch down instead of callbacks.
+
+
+```javascript
+// component.jsx
+export const Counter = ({ counterState, onInc, onDec }) => (
+  <>
+    Count: {counterState.count}
+    <button onClick={onInc}>+</button>
+    <button onClick={onDec}>-</button>
+  </>
+)
+```
+```javascript
+// container.js
+
+import { combine, withReducer, withCallbacks } from 'react-hooks-combine'
+
+import { Counter } from './component.jsx'
+
+const initialState = { count: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'inc':
+      return { count: state.count + 1 };
+    case 'dec':
+      return { count: state.count - 1 };
+    default:
+      throw new Error();
+  }
+}
+
+const EnhancedCounter = combine(
+  withReducer({
+    reducer,
+    stateName: 'counterState',
+    initialState,
+  }),
+  withCallbacks({
+    onInc: ({ dispatch }, props) => () => {
+      dispatch({ type: 'inc' })
+    },
+
+    onDec: ({ dispatch }) => () => {
+      dispatch({ type: 'dec' })
+    }
+  }, [])
+)(Counter)
+
+export default EnhancedCounter
+
+```
+
+### <a name="withCallbacks"></a>__`withCallbacks()`__
+
+### <a name="withCallback"></a>__`withCallback()`__
+
+### <a name="withMemos"></a>__`withMemos()`__
+
+### <a name="withMemo"></a>__`withMemo()`__
+
+### <a name="withEffect"></a>__`withEffect()`__
+
+### <a name="withLayoutEffect"></a>__`withLayoutEffect()`__
+
+### <a name="withAsyncEffect"></a>__`withAsyncEffect()`__
+
+### <a name="withContext"></a>__`withContext()`__
+
+### <a name="withRef"></a>__`withRef()`__
