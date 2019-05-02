@@ -1,5 +1,5 @@
 import { renderHook } from 'react-hooks-testing-library'
-import { withLayoutEffect } from '../src/hooks'
+import { withLayoutEffect } from '../../src/hooks'
 
 
 describe('With Layout Effect hook', () => {

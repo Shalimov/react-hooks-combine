@@ -1,7 +1,7 @@
 import React, { useReducer, forwardRef } from 'react'
 import { create, act } from 'react-test-renderer'
 
-import { withImperativeHandle } from '../src/hooks'
+import { withImperativeHandle } from '../../src/hooks'
 
 describe('Imperative handle', () => {
   test(`
