@@ -1,5 +1,5 @@
 import { renderHook, act } from 'react-hooks-testing-library'
-import { withCallbacks, withCallback } from '../src/hooks'
+import { withCallbacks, withCallback } from '../../src/hooks'
 
 describe('With Callbacks hook', () => {
   test('should increment counter by handler', () => {

@@ -1,6 +1,6 @@
 import React, { createContext } from 'react'
 import { renderHook } from 'react-hooks-testing-library'
-import { withContext } from '../src/hooks'
+import { withContext } from '../../src/hooks'
 
 describe('With Context hook', () => {
   test('should get default context value', () => {

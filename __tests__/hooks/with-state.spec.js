@@ -1,5 +1,5 @@
 import { renderHook, act } from 'react-hooks-testing-library'
-import { withState } from '../src/hooks'
+import { withState } from '../../src/hooks'
 
 describe('With State hook', () => {
   test('should increment counter', () => {

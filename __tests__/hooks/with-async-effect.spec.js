@@ -1,5 +1,5 @@
 import { renderHook } from 'react-hooks-testing-library'
-import { withAsyncEffect } from '../src/hooks'
+import { withAsyncEffect } from '../../src/hooks'
 
 describe('With Async Effect hook', () => {
   test('should should update and inject values from async function', async () => {
