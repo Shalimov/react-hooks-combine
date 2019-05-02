@@ -53,7 +53,7 @@ As you can see above: two types of params are accepted:
 - or __CombineConfig__ object
 
 You can use __CombineConfig__ to cover the following cases:
-- You need to use HOCS from 3td party lib (e.g: Apollo GraphQl, Mobx-React, Recompose)
+- You need to use HOCS from 3rd party lib (e.g: Apollo GraphQl, Mobx-React, Recompose)
 - You want to set default props for Wrapper
 - You want to filter/omit/transform props before passing them down
 
@@ -120,10 +120,11 @@ export default EnhancedButton
 ### <a name="withState"></a>__`withState()`__
 
 ```javascript
-withState(stateName: string, updateFn: string, initialValue: any | Function(state: Object, props: Object) -> any) -> CustomHook
+@typedef {Function(state: Object, props: Object) -> any} InitStateFunc
+withState(stateName: string, updateFn: string, initialState: any | InitStateFunc) -> CustomHook
 ```
-Creates custom hook with produces local state and update function, based on [useState](https://reactjs.org/docs/hooks-reference.html#usestate) hook.
-3td parameter can accept any value as initial state or function that inits state lazily.
+Creates custom hook which produces local state and update function, based on [useState](https://reactjs.org/docs/hooks-reference.html#usestate) hook.
+3rd parameter can accept any value as initial state or function that inits state lazily.
 
 __NB!__: The initialState argument is the state used during the initial render. In subsequent renders, it is disregarded. If the initial state is the result of an expensive computation, you may provide a function instead, which will be executed only on the initial render.
 
@@ -138,7 +139,7 @@ const EnhancedPanel = combine(
   withState('stateValue1', 'setStateValue1', 'Hello State Value 1'),
   withState('stateValue2', 'setStateValue2', (state, ownProps) => {
     // will be invoked only once
-    console.log(props) // component ownProps
+    console.log(ownProps) // component ownProps
     console.log(state) // { stateValue1: Hello State Value 1 }
     return someExpensiveComputation(state, props)
   })

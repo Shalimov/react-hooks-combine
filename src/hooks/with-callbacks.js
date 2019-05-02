@@ -13,6 +13,6 @@ export const withCallbacks = (callbacks, dependencies) => {
 }
 
 export const withCallback = (callbackName, callback, dependencies) => (state, props) => {
-  const deps = getDeps(props, dependencies)
+  const deps = getDeps({ ...state, ...props }, dependencies)
   return { [callbackName]: useCallback(callback(state, props), deps) }
 }

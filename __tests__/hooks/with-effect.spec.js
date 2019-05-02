@@ -1,5 +1,5 @@
 import { renderHook } from 'react-hooks-testing-library'
-import { withEffect } from '../src/hooks'
+import { withEffect } from '../../src/hooks'
 
 
 describe('With Effect hook', () => {
