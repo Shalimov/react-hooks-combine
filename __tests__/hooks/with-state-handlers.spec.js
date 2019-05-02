@@ -1,5 +1,5 @@
 import { renderHook, act } from 'react-hooks-testing-library'
-import { withStateHandlers } from '../src/hooks'
+import { withStateHandlers } from '../../src/hooks'
 
 describe('With State Handlers hook', () => {
   test('should increment and decrement counter', () => {

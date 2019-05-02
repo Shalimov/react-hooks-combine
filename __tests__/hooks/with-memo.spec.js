@@ -1,5 +1,5 @@
 import { renderHook } from 'react-hooks-testing-library'
-import { withMemo, withMemos } from '../src/hooks'
+import { withMemo, withMemos } from '../../src/hooks'
 
 describe('With Memo hook', () => {
   test('should use memo hook', () => {

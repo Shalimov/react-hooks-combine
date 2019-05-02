@@ -1,5 +1,5 @@
 import { renderHook } from 'react-hooks-testing-library'
-import { withRef } from '../src/hooks'
+import { withRef } from '../../src/hooks'
 
 describe('With Ref hook', () => {
   test('should exist ref object', () => {
