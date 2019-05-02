@@ -10,12 +10,12 @@
     - [withState()](#withState)
     - [withStateHandlers()](#withStateHandlers)
     - [withReducer()](#withReducer)
-  - [Callbacks](#withCallbacks)
-    - [withCallbacks()](#withCallbacks)
+  - [Callbacks](#withCallback)
     - [withCallback()](#withCallbacks)
-  - [Memo](#withMemos)
-    - [withMemos()](#withMemos)
+    - [withCallbacks()](#withCallbacks)
+  - [Memo](#withMemo)
     - [withMemo()](#withMemo)
+    - [withMemos()](#withMemos)
   - [Effect](#withEffect)
     - [withEffect()](#withEffect)
     - [withLayoutEffect()](#withLayoutEffect)
@@ -120,10 +120,9 @@ export default EnhancedButton
 ### <a name="withState"></a>__`withState()`__
 
 ```javascript
-withState(stateName: string, updateFn: string, initialValue: any | Function(state: Object, props: Object) -> any)
+withState(stateName: string, updateFn: string, initialValue: any | Function(state: Object, props: Object) -> any) -> CustomHook
 ```
-
-Creates local state and update function by using [useState](https://reactjs.org/docs/hooks-reference.html#usestate) hook.
+Creates custom hook with produces local state and update function, based on [useState](https://reactjs.org/docs/hooks-reference.html#usestate) hook.
 3td parameter can accept any value as initial state or function that inits state lazily.
 
 __NB!__: The initialState argument is the state used during the initial render. In subsequent renders, it is disregarded. If the initial state is the result of an expensive computation, you may provide a function instead, which will be executed only on the initial render.
@@ -137,7 +136,7 @@ import { Panel } from './component.jsx'
 
 const EnhancedPanel = combine(
   withState('stateValue1', 'setStateValue1', 'Hello State Value 1'),
-  withState('stateValue2', 'setStateValue2', (state, props) => {
+  withState('stateValue2', 'setStateValue2', (state, ownProps) => {
     // will be invoked only once
     console.log(props) // component ownProps
     console.log(state) // { stateValue1: Hello State Value 1 }
@@ -152,13 +151,13 @@ export default EnhancedPanel
 
 ```javascript
 withStateHandlers(
-  initialState: Object | Function(state: Object, props: Object) -> Object,
+  initialState: Object | Function(state: Object, ownProps: Object) -> Object,
   stateUpdaters: {
-    [key: string]: Function(state: Object, props: Object) -> Function(...payload: any[]) -> Object
+    [key: string]: Function(state: Object, ownProps: Object) -> Function(...payload: any[]) -> Object
   }
-)
+) -> CustomHook
 ```
-
+An alternative to [`withState()`](#withState).
 Passes state object properties and immutable updater functions in a form of `Function(...payload: any[]) -> Object` to the wrapped component.
 
 Every state updater function accepts state, props and payload and must return a new state or undefined. The new state is shallowly merged with the previous state. Returning undefined does not cause a component rerender.
@@ -183,7 +182,7 @@ const EnhancedPanel = combine(
     setData: () => data => ({ data })
   }),
   withCallbacks({
-    onCollapse: (state, props) => () => {
+    onCollapse: (state, ownProps) => () => {
       if (props.canBeCollapsed) {
         state.collapse()
       }
@@ -206,10 +205,10 @@ withReducer<S, A>(
     initialState: S,
     init: Function(S) -> S,
   }
-)
+) -> CustomHook
 ```
 
-An alternative to [`withState()`](#withState). Accepts a config object with required properties such as:
+An alternative to [`withState()`](#withState). Based on [useReducer](https://reactjs.org/docs/hooks-reference.html#usereducer) hook. Accepts a config object with required properties such as:
 - reducer of type Function(state, action) -> newState
 - stateName - will be found in result state object by provided name
 - dispatchName (dispatch by default) - will be found in result state object by provided name
@@ -258,11 +257,11 @@ const EnhancedCounter = combine(
     initialState,
   }),
   withCallbacks({
-    onInc: ({ dispatch }, props) => () => {
+    onInc: ({ dispatch }, ownProps) => () => {
       dispatch({ type: 'inc' })
     },
 
-    onDec: ({ dispatch }) => () => {
+    onDec: ({ dispatch }, ownProps) => () => {
       dispatch({ type: 'dec' })
     }
   }, [])
@@ -271,10 +270,91 @@ const EnhancedCounter = combine(
 export default EnhancedCounter
 
 ```
+### <a name="withCallback"></a>__`withCallback()`__
+```javascript
+// @typedef {Function(state: Object, ownProps: Object) -> Function(...args[]: any)} CallbackCreator
+withCallback(cbName: string, cbCreator: CallbackCreator , dependencies: Array.<string>) -> CustomHook
+```
+
+Creates custom hook to produce a memoized callback. Based on [useCallback](https://reactjs.org/docs/hooks-reference.html#usecallback) hook.
+
+Pass an inline callback and an array of dependencies. useCallback will return a memoized version of the callback that only changes if one of the dependencies has changed. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders (e.g. shouldComponentUpdate).
+
+__Example__
+
+```javascript
+// component.jsx
+import React from 'react'
+
+export const ToggleButton = ({ onToggle }) => (
+  <button onClick={onToggle} ...>
+    ...
+  </button>
+)
+
+```
+```javascript
+// container.js
+
+import { combine, withCallback } from 'react-hooks-combine'
+
+import { ToogleButton } from './component'
+
+const EnhancedToggleButton = combine(
+  withCallback('onToggle', (state, ownProps) => )
+)(ToggleButton)
+
+export default ToggleButton
+```
 
 ### <a name="withCallbacks"></a>__`withCallbacks()`__
 
-### <a name="withCallback"></a>__`withCallback()`__
+```javascript
+// @typedef {Function(state: Object, ownProps: Object) -> Function(...args[]: any)} CallbackCreator
+withCallbacks({
+  [key: string]: CallbackCreator
+}, dependencies: Array.<string>) -> CustomHook
+
+// or
+
+withCallbacks({
+  [key: string]: {
+    func: CallbackCreator,
+    deps: Array.<string> // <- deps only to the callback in block
+  },
+
+  [key: string]: CallbackCreator // <- use all defined as second param deps, see below
+}, dependencies: Array.<string>) -> CustomHook
+```
+
+Works like [`withCallback`](#withCallaback) but allows to create a few callbacks at once.
+There is an ability to define personal callback dependencies as well as deps for group of callback.
+Based on [useCallback](https://reactjs.org/docs/hooks-reference.html#usecallback) hook.
+
+__Example__
+
+```javascript
+import { combine, withState, withCallbacks } from 'react-hooks-combine'
+
+import { Counter } from './component'
+
+const EnhancedCounter = combine(
+  withState('count', 'setCount', 0),
+  withCallbacks({
+    onInc: {
+      func: (state, ownProps) => () => {
+        state.setCount(state.count + 1)
+      },
+      deps: ['count'], // <- it's releveant only for callback in block (onInc)
+    },
+
+    onDec: (state, ownProps) => () => {
+      state.setCount(state.count - 1)
+    }
+  }, ['count']) // relates only to onDec
+)(Counter)
+```
+
 
 ### <a name="withMemos"></a>__`withMemos()`__
 
