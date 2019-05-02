@@ -11,7 +11,13 @@ import {
 } from '../src/utils'
 
 describe('Utils', () => {
-  test('should "isFunction" works with any parameters', () => {
+  test(`
+    Check isFunction function to return true or false if param is function
+      - check with function param should return true
+      - check with object param should return false
+      - check with falsy values should return false
+      - check with empty param should return false
+  `, () => {
     const testFunc = () => ({})
     function testFunc1() {}
 
@@ -26,7 +32,13 @@ describe('Utils', () => {
     expect(isFunction()).toBe(false)
   })
 
-  test('should "isObject" works with any parameters', () => {
+  test(`
+    Check isObject function to return true or false if param is object
+      - check with object param should return true
+      - check with function param should return false
+      - check with falsy values should return false
+      - check with empty param should return false
+  `, () => {
     const testObj = {}
     const testObj1 = Object.create(null)
 
@@ -44,7 +56,14 @@ describe('Utils', () => {
     expect(isObject()).toBe(false)
   })
 
-  test('should "isPromiseLike" works with any parameters', () => {
+  test(`
+    Check isPromiseLike function to return true or false if param is promise (promise like)
+      - check with promise param should return true
+      - check with fake promise (promise like function) param should return true
+      - check with array should return false
+      - check with object param should return false
+      - check with string param should return false
+  `, () => {
     const testPromise = new Promise(resolve => resolve('result'))
     const testPromise1 = new Promise(() => ({}))
 
@@ -65,7 +84,13 @@ describe('Utils', () => {
     expect(isPromiseLike([])).toBe(false)
   })
 
-  test('should "isCombineConfigMode" works with any parameters', () => {
+  test(`
+    Check isCombineConfigMode function to return true or false if use combine with config
+      - check with array param with the first object element should return true
+      - check with empty collection param should return false
+      - check with string array should return false
+      - check with number array param should return false
+  `, () => {
     expect(typeof isCombineConfigMode([])).toBe('boolean')
     expect(isCombineConfigMode([{}])).toBe(true)
     expect(isCombineConfigMode([{}, {}])).toBe(true)
@@ -75,7 +100,12 @@ describe('Utils', () => {
     expect(isCombineConfigMode([1])).toBe(false)
   })
 
-  test('should "prop" works with any parameters', () => {
+  test(`
+    Check prop function to return value from object by path
+      - check with falsy param should return the same param
+      - check with object and incorrect path params should return undefined
+      - check with object and correct path params should return true
+  `, () => {
     const obj = {
       key1: 'value1',
       key2: {
@@ -96,7 +126,12 @@ describe('Utils', () => {
     expect(prop(obj, 'key2.key5.anyKey')).toEqual(undefined)
   })
 
-  test('should "getDeps" works with any parameters', () => {
+  test(`
+    Check getDeps function to return mapped deps from props values
+      - check with falsy param should return undefined
+      - check with source object and deps names collection should return mapped deps collection
+      - check with source object and deps name as string should the same deps name
+  `, () => {
     const source = {
       key1: 'value1',
       key2: 'value2',
@@ -115,7 +150,11 @@ describe('Utils', () => {
     expect(getDeps(source, depsName)).toEqual(depsName)
   })
 
-  test('should "defaultProps" works with any parameters', () => {
+  test(`
+    Check defaultProps function to return the same provided Component with defaultProps property
+      - check with falsy param should return Component without defaultProps property
+      - check with props object should return Component with defaultProps property
+  `, () => {
     function Component() {
       return null
     }
@@ -132,7 +171,13 @@ describe('Utils', () => {
     expect(defaultProps(props)(Component).defaultProps).toEqual(props)
   })
 
-  test('should "identity" works with any parameters', () => {
+  test(`
+    Check identity function to return the same value as a param
+      - check with empty param should return undefined
+      - check with promitive values should return the same values
+      - check with object should return the same object
+      - check with array should return the same array
+  `, () => {
     const values = {
       key1: 'value1',
       key2: 34,
@@ -152,7 +197,12 @@ describe('Utils', () => {
     expect(identity(values.key6)).toBe(values.key6)
   })
 
-  test('should "flow" works with any parameters', () => {
+  test(`
+    Check flow function to transform or inject some props to Component
+      - check with custom enhancer that inject property to Component function should return changed Component
+      - check enhancer should be called with Component param
+      - check all enhancers should be applied consistently to the component
+  `, () => {
     const enhancer = (Component) => {
       // eslint-disable-next-line
       Component.enhanced = true
@@ -188,5 +238,4 @@ describe('Utils', () => {
     expect(EnhancedComponent.enhanced1).toBe(true)
     expect(EnhancedComponent.loading).toBe(true)
   })
-
 })

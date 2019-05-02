@@ -4,7 +4,7 @@ import { combine } from '../src/combine'
 
 
 describe('Combine', () => {
-  test('should enhance component', () => {
+  test('Check combine return a wrapped component with *componentName*Hooded name', () => {
     function Component() {
       return null
     }
@@ -13,7 +13,10 @@ describe('Combine', () => {
     expect(EnhancedComponent.displayName).toBe('ComponentHooked')
   })
 
-  test('should enhance component', () => {
+  test(`
+    Check combine should apply enhancer to component:
+    Enhancer should inject prop to component
+  `, () => {
     function Component() {
       return null
     }
@@ -29,14 +32,30 @@ describe('Combine', () => {
     expect(instance.props.enhanced).toBe(true)
   })
 
-  test('should enhance component with object', () => {
+  test(`
+    Check combine function works with object config:
+    - check hocs property to wrap component by hocs
+    - check hooks property to inject hooks to component
+    - check defaultProps to inject default props to component
+    - check transformProps to transform/omit/inject props
+  `, () => {
     function Component() {
       return null
     }
 
     const enhancer = () => ({ enhanced: true })
 
+    // eslint-disable-next-line
+    const HocComponent = ({ children }) => (<div>{children}</div>)
+
+    const hoc = propValue => ChildComponent => () => (
+      <HocComponent>
+        <ChildComponent additionPropFromHOC={propValue} />
+      </HocComponent>
+    )
+
     const EnhancedComponent = combine({
+      hocs: [hoc('hocValue')],
       hooks: [enhancer],
       defaultProps: {
         defaultProp: 'defaultProp',
@@ -54,5 +73,6 @@ describe('Combine', () => {
     expect(instance.props.enhanced).toBe(true)
     expect(instance.props.defaultProp).toBe('defaultProp')
     expect(instance.props.transformedProp).toBe('transformedProp')
+    expect(instance.props.additionPropFromHOC).toBe('hocValue')
   })
 })
