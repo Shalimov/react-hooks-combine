@@ -23,6 +23,8 @@
   - [Other](#withContext)
     - [withContext()](#withContext)
     - [withRef()](#withRef)
+    - [withImperativeHandle()](#withImperativeHandle)
+    - [withDebugValue()](#withDebugValue)
 
 ## <a name="utils"></a>__Utils__
 
@@ -279,7 +281,7 @@ withCallback(cbName: string, cbCreator: CallbackCreator , dependencies: Array.<s
 
 Creates custom hook to produce a memoized callback. Based on [useCallback](https://reactjs.org/docs/hooks-reference.html#usecallback) hook.
 
-Pass an inline callback and an array of dependencies. useCallback will return a memoized version of the callback that only changes if one of the dependencies has changed. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders (e.g. shouldComponentUpdate).
+Pass an inline callback and an array of dependencies. Custom hook which is using [useCallback](https://reactjs.org/docs/hooks-reference.html#usecallback) will return a memoized version of the callback that only changes if one of the dependencies has changed. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders (e.g. shouldComponentUpdate).
 
 __Example__
 
@@ -356,10 +358,95 @@ const EnhancedCounter = combine(
 )(Counter)
 ```
 
+### <a name="withMemo"></a>__`withMemo()`__
+
+```javascript
+// @typedef {Function(state: Object, ownProps: Object) -> any} HeavyComputationWrapper
+withMemo(memoizedValueName: string, memoFunction: HeavyComputationWrapper, dependencies: Array.<string>) -> CustomHook
+```
+
+Creates custom hook to produce a memoized value. Based on [useMemo](https://reactjs.org/docs/hooks-reference.html#usememo) hook.
+
+Pass a function and an array of dependencies. Custom hook which is using [useMemo](https://reactjs.org/docs/hooks-reference.html#usememo)
+will only recompute the memoized value when one of the dependencies has changed. This optimization helps to avoid expensive calculations on every render.
+
+__Example__
+
+```javascript
+// component.jsx
+import React from 'react'
+
+export const Board = ({ superData }) => (
+  <Reporting data={superData} />
+)
+```
+```javascript
+// container.js
+import { combine, withMemo } from 'react-hooks-combine'
+
+import { Board } from './component'
+
+const EnhancedBoard = combine(
+  withMemo('superData', (state, ownProps) => {
+    return superHeavyComputations(state)
+  }, ['updatedAt'])
+)
+
+export default EnhancedBoard
+```
+
+__NB!__: [(From React Docs)](https://reactjs.org/docs/hooks-reference.html#usememo)
+
+**"You may rely on useMemo as a performance optimization, not as a semantic guarantee."**
+
+**"In the future, React may choose to “forget” some previously memoized values and recalculate them on next render, e.g. to free memory for offscreen components. Write your code so that it still works without useMemo — and then add it to optimize performance."**
 
 ### <a name="withMemos"></a>__`withMemos()`__
 
-### <a name="withMemo"></a>__`withMemo()`__
+```javascript
+// @typedef {Function(state: Object, ownProps: Object) -> any} HeavyComputationWrapper
+withMemos({
+  [key: string]: HeavyComputationWrapper
+}, dependencies: Array.<string>) -> CustomHook
+
+// or
+
+withMemos({
+  [key: string]: {
+    func: HeavyComputationWrapper,
+    deps: Array.<string> // <- deps only to the memoFunc in block
+  },
+
+  [key: string]: HeavyComputationWrapper // <- use all defined as second param deps, see below
+}, dependencies: Array.<string>) -> CustomHook
+```
+
+Works like [`withMemo`](#withMemo) but allows to group memo calls logically.
+There is an ability to define personal memoFunc dependencies as well as deps for group of memoFuncs.
+Based on [useMemo](https://reactjs.org/docs/hooks-reference.html#usememo) hook.
+
+__Example__
+
+```javascript
+import { combine, withMemos } from 'react-hooks-combine'
+
+import { Counter } from './component'
+
+const EnhancedCounter = combine(
+  withMemos({
+    firstValue: {
+      func: (_state, ownProps) => {
+        return ownProps.superHeavy1()
+      },
+      deps: ['createdAt'], // <- it's releveant only for memoFunc in block
+    },
+
+    secondValue: (state, ownProps) => () => {
+      return ownProps.superHeavy2()
+    }
+  }, ['updateAt']) // relates only to onDec
+)(Counter)
+```
 
 ### <a name="withEffect"></a>__`withEffect()`__
 
@@ -370,3 +457,7 @@ const EnhancedCounter = combine(
 ### <a name="withContext"></a>__`withContext()`__
 
 ### <a name="withRef"></a>__`withRef()`__
+
+### <a name="withImperativeHandle"></a>__`withImperativeHandle()`__
+
+### <a name="withRef"></a>__`withDebugValue()`__
