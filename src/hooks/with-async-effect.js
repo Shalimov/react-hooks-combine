@@ -1,31 +1,28 @@
 import { useEffect, useState } from 'react'
 
-import { getDeps, isFunction, isPromiseLike, getInternalCtor } from '../utils'
+import { getDeps, isPromiseLike, getInternalCtor } from '../utils'
 
-// Error handling should be done to cover failures
-export const withAsyncEffect = (asyncCallback, deps, unmountCallback) => {
-  if (!isFunction(asyncCallback)) {
-    throw Error(`withAsyncEffect expects function, got a: ${getInternalCtor(asyncCallback)}`)
-  }
+export const withAsyncEffect = params => (state, props) => {
+  const { asyncAction, disposeAction, deps } = params
+  const [innerState, setData] = useState({ loading: true, data: null, error: null })
 
-  return (state, props) => {
-    const [innerState, setData] = useState({ loading: true, data: null })
+  useEffect(() => {
+    setData({ data: innerState.data, error: null, loading: true })
 
-    useEffect(() => {
-      setData({ data: innerState.data, loading: true })
+    const promise = asyncAction(state, props)
 
-      const promise = asyncCallback(state, props)
+    if (!isPromiseLike(promise)) {
+      throw Error(`withAsyncEffect expects Promise, got a: ${getInternalCtor(promise)}`)
+    }
 
-      if (!isPromiseLike(promise)) {
-        throw Error(`withAsyncEffect expects Promise, got a: ${getInternalCtor(promise)}`)
-      }
+    promise.then((result) => {
+      setData({ loading: false, data: result, error: null })
+    }, (error) => {
+      setData({ loading: false, data: innerState.data, error })
+    })
 
-      promise.then(result => setData({ loading: false, data: result }))
+    return disposeAction
+  }, getDeps({ ...state, ...props }, deps))
 
-      return unmountCallback
-
-    }, getDeps({ ...state, ...props }, deps))
-
-    return innerState
-  }
+  return innerState
 }
