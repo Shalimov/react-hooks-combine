@@ -7,14 +7,13 @@
 React Hooks Combine (RHC) is a simple utility belt to help you split up logic for your components between container (smart) part and dummy component (view) part.
 It helps you to create only one [__HOC__](https://reactjs.org/docs/higher-order-components.html) effortlessly with [__custom hook__](https://reactjs.org/docs/hooks-custom.html) which combines all listed [HOOKS](https://reactjs.org/docs/hooks-intro.html) (all in one).
 
-It has API Design similar to [Recompose](https://github.com/acdlite/recompose), if you are already familiar with it you can start your discovery here: [For Recompose Adepts](/docs/for-recompose-adepts.md).
+It has API Design similar to [Recompose](https://github.com/acdlite/recompose).
 
 ---
 ## Documentation
 The documentation is divided into several sections:
 - [API Reference](/docs/api-reference.md)
-- [How it works](/docs/explanation.md)
-- [Recompose Similarities](/docs/for-recompose-adepts.md)
+- [How it works TBD](/docs/explanation.md)
 
 You can improve it by sending pull requests to this repository.
 

@@ -1,5 +1,6 @@
 import { useDebugValue } from 'react'
 
-export const withDebugValue = (value, formatter) => () => {
-  useDebugValue(value, formatter)
+export const withDebugValue = (valueExtractor, formatter) => (state, props) => {
+  const status = valueExtractor(state, props)
+  useDebugValue(status, formatter)
 }
