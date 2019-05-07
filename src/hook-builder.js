@@ -2,9 +2,10 @@ import { isFunction } from './utils'
 
 export const hookBuilder = (combineFuncs) => {
   const blackSheepIndex = combineFuncs.findIndex(fn => !isFunction(fn))
+
   if (blackSheepIndex !== -1) {
     throw Error(`
-      Expects function,
+      Expected function,
       got a: ${typeof combineFuncs[blackSheepIndex]}
       on index: ${blackSheepIndex}
     `)
@@ -13,10 +14,8 @@ export const hookBuilder = (combineFuncs) => {
   const FuncCtor = Function
 
   const body = combineFuncs.map((_fn, index) => `
-    const state${index + 1} = {
-      ...state${index},
-      ...funcs[${index}](state${index}, props),
-    };
+    const result${index} = funcs[${index}](state${index}, props) || {}
+    const state${index + 1} = Object.setPrototypeOf(result${index}, state${index});
   `).join('\n')
 
   const template = `
