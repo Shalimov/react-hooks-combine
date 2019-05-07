@@ -2,10 +2,13 @@
   "name": "react-hooks-combine",
   "version": "1.0.4",
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "repository": "git@github.com:Shalimov/react-hooks-combine.git",
   "license": "MIT",
   "private": false,
+  "files": ["dist"],
   "scripts": {
+    "prepare": "rollup --config",
     "build": "rollup --config",
     "test": "jest",
     "test:watch": "jest --watch",
