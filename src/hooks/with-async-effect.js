@@ -1,28 +1,42 @@
 import { useEffect, useState } from 'react'
 
-import { getDeps, isPromiseLike, getInternalCtor } from '../utils'
+import { getDeps, isPromiseLike, getInternalCtor, isFunction } from '../utils'
 
-export const withAsyncEffect = params => (state, props) => {
+export const withAsyncEffect = (params) => {
+  let nonInitial = false
   const { asyncAction, disposeAction, deps } = params
-  const [innerState, setData] = useState({ loading: true, data: null, error: null })
+  const resetNonInitialStatus = () => { nonInitial = false }
 
-  useEffect(() => {
-    setData({ data: innerState.data, error: null, loading: true })
+  const disposeWrapper = isFunction(disposeAction) ? () => {
+    resetNonInitialStatus()
+    disposeAction()
+  } : resetNonInitialStatus
 
-    const promise = asyncAction(state, props)
+  return (state, props) => {
+    const [innerState, setData] = useState({ loading: true, data: null, error: null })
 
-    if (!isPromiseLike(promise)) {
-      throw Error(`withAsyncEffect expects Promise, got a: ${getInternalCtor(promise)}`)
-    }
+    useEffect(() => {
+      if (nonInitial) {
+        setData({ data: innerState.data, error: null, loading: true })
+      }
 
-    promise.then((result) => {
-      setData({ loading: false, data: result, error: null })
-    }, (error) => {
-      setData({ loading: false, data: innerState.data, error })
-    })
+      nonInitial = true
 
-    return disposeAction
-  }, getDeps({ ...state, ...props }, deps))
+      const promise = asyncAction(state, props)
 
-  return innerState
+      if (!isPromiseLike(promise)) {
+        throw Error(`withAsyncEffect expects Promise, got a: ${getInternalCtor(promise)}`)
+      }
+
+      promise.then((result) => {
+        setData({ loading: false, data: result, error: null })
+      }, (error) => {
+        setData({ loading: false, data: innerState.data, error })
+      })
+
+      return disposeWrapper
+    }, getDeps({ ...state, ...props }, deps))
+
+    return innerState
+  }
 }
