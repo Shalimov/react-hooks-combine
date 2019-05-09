@@ -505,6 +505,7 @@ Prefer the [withEffect](#withEffect) to create custom hook based on [useEffect](
 withAsyncEffect(config: {
   asyncAction: Function(state: Object, ownProps: Object) -> Promise,
   disposeAction?: Function(),
+  dataName?: string, // 'data' by default
   deps?: Array.<string>,
 }) -> CustomHook
 ```
@@ -538,6 +539,7 @@ const EnhancedForm = (
   withContext('services', APIServicesContext),
   withAsyncEffect({
     deps: [],
+    dataName: 'userData', // 'data' by default
     asyncAction: ({ services }, ownProps) => {
       const { userService } = services
       return userService.get(ownProps.userId)

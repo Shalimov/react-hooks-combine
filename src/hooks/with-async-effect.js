@@ -4,7 +4,12 @@ import { getDeps, isPromiseLike, getInternalCtor, isFunction } from '../utils'
 
 export const withAsyncEffect = (params) => {
   let nonInitial = false
-  const { asyncAction, disposeAction, deps } = params
+  const {
+    asyncAction,
+    disposeAction,
+    dataName,
+    deps,
+  } = { dataName: 'data', ...params }
   const resetNonInitialStatus = () => { nonInitial = false }
 
   const disposeWrapper = isFunction(disposeAction) ? () => {
@@ -13,11 +18,11 @@ export const withAsyncEffect = (params) => {
   } : resetNonInitialStatus
 
   return (state, props) => {
-    const [innerState, setData] = useState({ loading: true, data: null, error: null })
+    const [innerState, setData] = useState({ loading: true, [dataName]: null, error: null })
 
     useEffect(() => {
       if (nonInitial) {
-        setData({ data: innerState.data, error: null, loading: true })
+        setData({ loading: true, [dataName]: innerState[dataName], error: null })
       }
 
       nonInitial = true
@@ -29,9 +34,9 @@ export const withAsyncEffect = (params) => {
       }
 
       promise.then((result) => {
-        setData({ loading: false, data: result, error: null })
+        setData({ loading: false, [dataName]: result, error: null })
       }, (error) => {
-        setData({ loading: false, data: innerState.data, error })
+        setData({ loading: false, [dataName]: innerState[dataName], error })
       })
 
       return disposeWrapper
