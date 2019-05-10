@@ -90,8 +90,8 @@ export default combine(
       setCount(count + 1)
     },
 
-    onMinus: ({ count, setCount }, _props) => () => {
-      setCount(count - 1)
+    onMinus: ({ setCount }, _props) => () => {
+      setCount(count => count - 1) // function could be used
     }
   }, ['count']), // <-  deps for useCallback (CHECK API TO LEARN MORE)
 )
