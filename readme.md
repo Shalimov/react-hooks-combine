@@ -62,13 +62,17 @@ const reducer = (count, action) => {
 }
 
 export default combine(
-  withReducer(reducer, 'counterState', 'dispatchFn', 0),
+  withReducer({
+    reducer,
+    stateName: counterState,
+    initialState: 0,
+  }),
   withCallbacks({
-    onPlus: ({ counterState, dispatchFn }, _props) => () => {
+    onPlus: ({ counterState, dispatch }, _props) => () => {
       dispatchFn({ type: INC })
     },
 
-    onMinus: ({ counterState, dispatchFn }, _props) => () => {
+    onMinus: ({ counterState, dispatch }, _props) => () => {
       dispatchFn({ type: DEC })
     }
   }, ['counterState']), // <-  deps for useCallback (CHECK API TO LEARN MORE)
