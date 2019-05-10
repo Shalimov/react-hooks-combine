@@ -26,6 +26,7 @@
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
+    "@types/jest": "^24.0.12",
     "babel-jest": "^24.7.1",
     "eslint": "5.3.0",
     "eslint-config-airbnb": "17.1.0",
