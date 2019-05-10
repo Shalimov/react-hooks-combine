@@ -122,11 +122,11 @@ export default combine(
   }),
   withCallbacks({
     onPlus: ({ counterState, dispatch }, _props) => () => {
-      dispatchFn({ type: INC })
+      dispatch({ type: INC })
     },
 
     onMinus: ({ counterState, dispatch }, _props) => () => {
-      dispatchFn({ type: DEC })
+      dispatch({ type: DEC })
     }
   }, ['counterState']), // <-  deps for useCallback (CHECK API TO LEARN MORE)
 )
