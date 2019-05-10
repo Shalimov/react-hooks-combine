@@ -39,7 +39,7 @@ import React from 'react'
 export const UserPageComponent = ({ loading, userData, onSubmit, onCancel }) => (
   <div>
     <h2>User Form</h2>
-    <ContentLoader loading={loading}>
+    <ContentLoadIndicator loading={loading}>
       {
         () => (
           <UserForm 
@@ -48,7 +48,7 @@ export const UserPageComponent = ({ loading, userData, onSubmit, onCancel }) => 
             onCancel={onCancel} />
         )
       }
-    </ContentLoader>
+    </ContentLoadIndicator>
   </div>
 )
 ```
