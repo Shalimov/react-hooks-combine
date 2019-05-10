@@ -1,15 +1,10 @@
 import { renderHook, act } from 'react-hooks-testing-library'
 
 import { withState, withCallbacks } from '../../src';
+import { repeatScenario } from '../utils'
 import { hookBuilder } from '../../src/hook-builder';
 
 describe('Counter Hook', () => {
-  const repeatScenario = (iterations, callback) => {
-    for (let i = 0; i < iterations; i += 1) {
-      callback()
-    }
-  }
-
   test(`
   Creates custom hook to control counter state
   - toggle 10 times and check the results of expand (use func updater for setExpand)

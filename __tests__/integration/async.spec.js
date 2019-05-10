@@ -1,5 +1,6 @@
 import React from 'react'
 import { create, act } from 'react-test-renderer'
+import { repeatScenario } from '../utils'
 import { withAsyncEffect, withMemo, withCallback, combine } from '../../src';
 
 const mockData = (multiplier = 1) => [
@@ -25,17 +26,18 @@ const mockData = (multiplier = 1) => [
   },
 ]
 
-const delay = (timeout = 1000) => new Promise((resolve) => {
-  setTimeout(() => resolve(timeout), timeout)
+const asyncAction = (_, { multiplier }) => ({
+  then: resolve => resolve(mockData(multiplier)),
+  catch: () => {},
 })
 
-const asyncCallback = (_, { multiplier }) => new Promise(resolve => resolve(mockData(multiplier)))
-
-describe('Async Hook', () => {
+describe('Async Hook Integration', () => {
   test(`
   Creates custom hook to get data from async function and count value
-  - rerender 10 times and check the results of expand (use func updater for setExpand)
-  - check reference persistency of onToggle function (empty array of deps)
+  - rerender 10 times and check the results
+  - check reference persistency of getCount function
+  - check reference persistency of count object
+
   `, async () => {
     /* eslint-disable-next-line */
     const Component = ({ count: { count } }) => (
@@ -48,7 +50,11 @@ describe('Async Hook', () => {
     act(() => {
       EnhancedComponent = combine({
         hooks: [
-          withAsyncEffect(asyncCallback, ['multiplier']),
+          withAsyncEffect({
+            deps: ['multiplier'],
+            asyncAction,
+            disposeAction: () => ({}),
+          }),
           withMemo(
             'count',
             ({ data }) => {
@@ -67,27 +73,22 @@ describe('Async Hook', () => {
     const updateComponent = () => renderer.update(<EnhancedComponent multiplier={1} />)
     act(() => updateComponent())
 
-    await delay(200)
-
-    for (let i = 0; i < 10; i += 1) {
+    repeatScenario(10, () => {
       const prevProps = renderer.root.children[0].props
 
       act(() => updateComponent())
-
-      /* eslint-disable-next-line */
-      await delay(200)
 
       const nextProps = renderer.root.children[0].props
       expect(prevProps.data).toEqual(nextProps.data)
       expect(prevProps.count).toEqual(nextProps.count)
       expect(prevProps.getCount).toEqual(nextProps.getCount)
-    }
+    })
   })
 
   test(`
   Creates custom hook to control counter state
-  - toggle 10 times and check the results of expand (use func updater for setExpand)
-  - check reference persistency of onToggle function (empty array of deps)
+  - render 10 times with different multipier and check count prop should be different
+  - render 10 times with different multipier and check data prop should be different
   `, async () => {
     /* eslint-disable-next-line */
     const Component = ({ count }) => (
@@ -100,7 +101,11 @@ describe('Async Hook', () => {
     act(() => {
       EnhancedComponent = combine({
         hooks: [
-          withAsyncEffect(asyncCallback, ['multiplier']),
+          withAsyncEffect({
+            deps: ['multiplier'],
+            asyncAction,
+            disposeAction: () => ({}),
+          }),
           withMemo(
             'count',
             ({ data }) => (data || []).reduce((count, item) => count + item.count, 0),
@@ -114,16 +119,14 @@ describe('Async Hook', () => {
 
     const updateComponent = multiplier => renderer.update(<EnhancedComponent multiplier={multiplier} />)
 
-    for (let i = 1; i < 10; i += 1) {
+    repeatScenario(10, (i) => {
       const prevProps = renderer.root.children[0].props
 
-      act(() => updateComponent(i))
-      /* eslint-disable-next-line */
-      await delay(100)
+      act(() => updateComponent(i + 1))
 
       const nextProps = renderer.root.children[0].props
       expect(prevProps.count).toBe(nextProps.count - 30)
       expect(prevProps.data).not.toEqual(nextProps.data)
-    }
+    })
   })
 })
