@@ -31,6 +31,59 @@ __Install (choose preferable way)__
 
 __Then...__
 
+
+```javascript
+// component.jsx
+import React from 'react'
+
+export const UserPageComponent = ({ loading, userData, onSubmit, onCancel }) => (
+  <div>
+    <h2>User Form</h2>
+    <ContentLoader loading={loading}>
+      {
+        () => (
+          <UserForm 
+            initialValues={userData}
+            onSubmit={onSubmit}
+            onCancel={onCancel} />
+        )
+      }
+    </ContentLoader>
+  </div>
+)
+```
+
+```javascript
+// container.js (withAsyncEffect + withCallbacks)
+import { combine, withAsyncEffect, withCallbacks } from 'react-hooks-combine'
+
+import { UserPageComponent } from './component'
+
+export default combine(
+  withAsyncEffect({
+    deps: ['userId'], // will request again if user id is changed
+    dataName: 'userData', // 'data' by default
+    asyncAction: (_state, ownProps) => ownProps.userService.load(ownProps.userId),
+  }),
+  withCallbacks({
+    onSubmit: (state, props) => async (formData) => {
+      const { userData } = state
+      const { userService } = props
+
+      await userService.save({ ...userData, ...formData})
+      ...
+    },
+
+    onCancel: () => () => {
+      ...
+    }
+  }, ['userData'])
+)(UserPageComponent)
+
+```
+
+__OR__
+
 ```javascript
 // component.jsx
 import React from 'react'
