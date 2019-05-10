@@ -1,6 +1,5 @@
 {
   "hooks": {
-    "pre-commit": "yarn build; git add dist",
     "pre-push": "yarn test"
   }
 }
