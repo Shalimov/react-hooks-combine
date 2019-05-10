@@ -1,16 +1,44 @@
 {
-  "name": "react-hooks-combine",
   "version": "1.0.0",
+  "name": "react-hooks-combine",
+  "description": "React hooks powered, recompose like utility belt for ladies and gentlemen.",
   "main": "dist/index.js",
   "module": "dist/index.js",
+  "homepage": "https://github.com/Shalimov/react-hooks-combine/blob/master/readme.md",
+  "contributors": [
+    {
+      "name": "Igor Shalimov",
+      "email": "work.igor.shalimov@gmail.com",
+      "url": "https://github.com/shalimov"
+    },
+    {
+      "name": "Aleksey Makhankov",
+      "email": "aleksey.makhankov@gmail.com",
+      "url": "https://github.com/alekseymakhankov"
+    }
+  ],
   "repository": "git@github.com:Shalimov/react-hooks-combine.git",
   "license": "MIT",
   "private": false,
   "files": [
     "dist"
   ],
+  "keywords": [
+    "react",
+    "reactjs",
+    "react-hooks",
+    "performance",
+    "combine",
+    "hooks",
+    "api",
+    "HOC",
+    "high-order-component",
+    "recompose",
+    "toolkit",
+    "utilities"
+  ],
   "scripts": {
-    "prepare": "rollup --config",
+    "prepare": "yarn build",
     "build": "rollup --config",
     "test": "jest",
     "test:watch": "jest --watch",
