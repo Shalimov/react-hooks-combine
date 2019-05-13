@@ -16,12 +16,13 @@ const combineFromConfig = (config, Component) => {
     defaultProps,
     transformProps,
     transformPropsBefore,
-  } = Object.assign({
+  } = {
     hooks: [],
     hocs: [],
     transformProps: identity,
     transformPropsBefore: identity,
-  }, config)
+    ...config,
+  }
 
   const hooksComposition = hookBuilder(hooks)
 
