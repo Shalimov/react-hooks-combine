@@ -10,11 +10,19 @@ import {
 } from './utils'
 
 const combineFromConfig = (config, Component) => {
-  const { hooks, hocs, defaultProps, transformProps } = Object.assign({
+  const {
+    hooks,
+    hocs,
+    defaultProps,
+    transformProps,
+    transformPropsBefore,
+  } = {
     hooks: [],
     hocs: [],
     transformProps: identity,
-  }, config)
+    transformPropsBefore: identity,
+    ...config,
+  }
 
   const hooksComposition = hookBuilder(hooks)
 
@@ -23,8 +31,11 @@ const combineFromConfig = (config, Component) => {
   }
 
   const ExtendedComponent = (props) => {
-    const state = hooksComposition(props)
-    return <Component {...transformProps({ ...state, ...props })} />
+    const transformedProps = transformPropsBefore(props)
+    const state = hooksComposition(transformedProps)
+    const allProps = { ...transformedProps, ...state }
+
+    return <Component {...transformProps(allProps)} />
   }
 
   return flow(...hocs)(ExtendedComponent)

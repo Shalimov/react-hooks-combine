@@ -42,6 +42,7 @@ combine(hooks: Array.<Function -> CustomHook>) -> HigherOrderComponent (HOC)
  * @property {Array.<Function -> CustomHook>} hooks - list of functions which create custom hooks;
  * @property {Object} defaultProps - set of default component props;
  * @property {Function -> Object} transformProps - props transformer to omit, filter, map props which are supposed to be passed
+ * @property {Function -> Object} transformPropsBefore - props pre-transformer to omit, filter, map props which are supposed to be passed to custom hook composition and to transform props
 */
 combine(config: CombineConfig) -> HigherOrderComponent
 ```
@@ -110,7 +111,11 @@ const EnhancedButton = combine({
     animated: true,
   },
 
-  // props contains state and props
+  // it happens before hooks invocation, that's why we have no state props there
+  // result of this operation will be used in custom hook and transformProps
+  transformPropsBefore: props => _.omit(props, ['someExtraProp', 'someOtherProp'])
+  
+  // props combines state and props
   transformProps: props => _.pick(props, ['data', 'applicationState', 'animated', 'type'])
 })(Button)
 
