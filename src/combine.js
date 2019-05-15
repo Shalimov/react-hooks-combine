@@ -26,16 +26,16 @@ const combineFromConfig = (config, Component) => {
 
   const hooksComposition = hookBuilder(hooks)
 
-  if (defaultProps) {
-    withDefaultProps(defaultProps)(Component)
-  }
-
   const ExtendedComponent = (props) => {
     const transformedProps = transformPropsBefore(props)
     const state = hooksComposition(transformedProps)
     const allProps = { ...transformedProps, ...state }
 
     return <Component {...transformProps(allProps)} />
+  }
+
+  if (defaultProps) {
+    withDefaultProps(defaultProps)(ExtendedComponent)
   }
 
   return flow(...hocs)(ExtendedComponent)
