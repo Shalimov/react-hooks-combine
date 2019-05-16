@@ -1,4 +1,4 @@
-# 1.1.0
+# 1.1.1
 - Fix issue with default props. Child component only used them while Parent skiped them.
 
 # 1.1.0
