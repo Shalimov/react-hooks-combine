@@ -40,6 +40,7 @@ combine(hooks: Array.<Function -> CustomHook>) -> HigherOrderComponent (HOC)
  * @type {object}
  * @property {Array.<Function -> HOC>} hocs - list of higher order components (HOC);
  * @property {Array.<Function -> CustomHook>} hooks - list of functions which create custom hooks;
+ * @property {Boolean} forwardRef - passing ref to component;
  * @property {Object} defaultProps - set of default component props;
  * @property {Function -> Object} transformProps - props transformer to omit, filter, map props which are supposed to be passed
  * @property {Function -> Object} transformPropsBefore - props pre-transformer to omit, filter, map props which are supposed to be passed to custom hook composition and to transform props
@@ -99,8 +100,8 @@ const EnhancedButton = combine({
     tag(`
       query ....
     `)
-  ], 
-  
+  ],
+
   hooks: [
     withState(...),
     withCallbacks(...),
@@ -114,7 +115,7 @@ const EnhancedButton = combine({
   // it happens before hooks invocation, that's why we have no state props there
   // result of this operation will be used in custom hook and transformProps
   transformPropsBefore: props => _.omit(props, ['someExtraProp', 'someOtherProp'])
-  
+
   // props combines state and props
   transformProps: props => _.pick(props, ['data', 'applicationState', 'animated', 'type'])
 })(Button)
@@ -604,12 +605,53 @@ export default combine(
 )(Input)
 ```
 
-~~### <a name="withImperativeHandle"></a>__`withImperativeHandle()`__~~
+### <a name="withImperativeHandle"></a>__`withImperativeHandle()`__
 
-IN PROCESS OF DESIGN
+```javascript
+useImperativeHandler<V>(createHandler: Function(state, ownProps) -> V, deps?: Array.<string>) -> CustomHook
+```
 
-~~Creates custom hook based on [useImperativeHandler]().
-useImperativeHandle customizes the instance value that is exposed to parent components when using ref. As always, imperative code using refs should be avoided in most cases. useImperativeHandle should be used with forwardRef:~~
+Creates custom hook based on [useImperativeHandler]().
+useImperativeHandle customizes the instance value that is exposed to parent components when using ref. As always, imperative code using refs should be avoided in most cases. useImperativeHandle should be used with forwardRef:
+
+```javascript
+import React, { forwardRef } from 'react'
+import { combine, useImperativeHandler } from 'react-hooks-combine'
+
+const Input = () => (
+  <input type="text" />
+)
+
+export default forwardRef(combine(
+  useImperativeHandler(
+    () => ({ focus: () => {} }),
+    [],
+  )
+))
+```
+
+***IMPORTANT:*** you should provide ref for [useImperativeHandler]() by [React.forwardRef](), but it will work only for [useImperativeHandler](). If you want using ref in your component, you have to use [forwardRef]() property for [combine]() function.
+
+If you use [forwardRef]() property you don't have to wrap component by [React.forwardRef]().
+
+```javascript
+import React from 'react'
+import { combine, useImperativeHandler } from 'react-hooks-combine'
+
+const Input = (props, ref) => (
+  <input type="text" ref={ref} />
+)
+
+export default combine({
+  forwardRef: true,
+  hooks: [
+    useImperativeHandler(
+      () => ({ focus: () => {} }),
+      [],
+    ),
+  ],
+})
+```
 
 ### <a name="withDebugValue"></a>__`withDebugValue()`__
 
@@ -617,7 +659,7 @@ useImperativeHandle customizes the instance value that is exposed to parent comp
 withDebugValue<V>(valueExtractor: Function(state, ownProps) -> V, valueFormatter: Function(value: V) -> any)
 ```
 
-Create a custom hook based on [useDebugValue](https://reactjs.org/docs/hooks-reference.html#usedebugvalue). 
+Create a custom hook based on [useDebugValue](https://reactjs.org/docs/hooks-reference.html#usedebugvalue).
 Hook is created by `withDebugValue` can be used to display a label for custom hooks in React DevTools.
 
 In some cases formatting a value for display might be an expensive operation. It’s also unnecessary unless a Hook is actually inspected.

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef as reactForwardRef } from 'react'
 
 import { hookBuilder } from './hook-builder'
 
@@ -13,12 +13,14 @@ const combineFromConfig = (config, Component) => {
   const {
     hooks,
     hocs,
+    forwardRef,
     defaultProps,
     transformProps,
     transformPropsBefore,
   } = {
     hooks: [],
     hocs: [],
+    forwardRef: false,
     transformProps: identity,
     transformPropsBefore: identity,
     ...config,
@@ -26,13 +28,17 @@ const combineFromConfig = (config, Component) => {
 
   const hooksComposition = hookBuilder(hooks)
 
-  const ExtendedComponent = (props) => {
+  const forwardRefWrapper = forwardRef ? reactForwardRef : identity
+
+  const ReferredComponent = forwardRefWrapper(Component)
+
+  const ExtendedComponent = forwardRefWrapper((props, ref) => {
     const transformedProps = transformPropsBefore(props)
-    const state = hooksComposition(transformedProps)
+    const state = hooksComposition(transformedProps, ref)
     const allProps = { ...transformedProps, ...state }
 
-    return <Component {...transformProps(allProps)} />
-  }
+    return <ReferredComponent {...transformProps(allProps)} ref={ref} />
+  })
 
   if (defaultProps) {
     withDefaultProps(defaultProps)(ExtendedComponent)

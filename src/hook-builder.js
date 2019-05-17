@@ -15,8 +15,8 @@ export const hookBuilder = (combineFuncs) => {
 
   const FuncCtor = Function
 
-  const body = combineFuncs.map((_fn, index) => `  
-    const result${index} = funcs[${index}](state${index}, props)
+  const body = combineFuncs.map((_fn, index) => `
+    const result${index} = funcs[${index}](state${index}, props, ref)
     const state${index + 1} = merge(result${index}, state${index});
   `).join('\n')
 
@@ -26,6 +26,6 @@ export const hookBuilder = (combineFuncs) => {
     return state${combineFuncs.length};
   `
 
-  return new FuncCtor('funcs', 'merge', 'props', template)
+  return new FuncCtor('funcs', 'merge', 'props', 'ref', template)
     .bind(null, combineFuncs, merge)
 }

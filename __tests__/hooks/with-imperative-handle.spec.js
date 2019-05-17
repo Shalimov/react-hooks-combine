@@ -1,7 +1,7 @@
-import React, { useReducer, forwardRef } from 'react'
+import React from 'react'
 import { create, act } from 'react-test-renderer'
 
-import { withImperativeHandle } from '../../src'
+import { combine, withReducer, withImperativeHandle } from '../../src'
 
 describe('Imperative handle', () => {
   test(`
@@ -14,17 +14,23 @@ describe('Imperative handle', () => {
     function reducer(state, action) {
       return action === INCREMENT ? state + 1 : state;
     }
+    // eslint-disable-next-line
+    const Counter = ({ count }, ref) => (<span ref={ref}>{count}</span>)
 
-    function Counter(props, ref) {
-      const [count, dispatch] = useReducer(reducer, 0);
-      withImperativeHandle(ref, () => ({ dispatch }), ['count'])();
-      // eslint-disable-next-line
-      return <span>{count}</span>
-    }
+    const CombineCounter = combine({
+      forwardRef: true,
+      hooks: [
+        withReducer({
+          reducer,
+          stateName: 'count',
+          initialState: 0,
+        }),
+        withImperativeHandle(({ dispatch }) => ({ dispatch }), ['count']),
+      ],
+    })(Counter)
 
-    const CounterWithRef = forwardRef(Counter);
     const counterRef = React.createRef(null);
-    const render = create(<CounterWithRef ref={counterRef} />);
+    const render = create(<CombineCounter ref={counterRef} />);
     expect(render.root.findByType('span').children).toEqual(['0']);
     expect(counterRef.current.dispatch).not.toBe(undefined)
 
