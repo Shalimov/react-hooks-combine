@@ -23,7 +23,7 @@
   - [Other](#withContext)
     - [withContext()](#withContext)
     - [withRef()](#withRef)
-    - ~~[withImperativeHandle()](#withImperativeHandle)~~
+    - [withImperativeHandle()](#withImperativeHandle)
     - [withDebugValue()](#withDebugValue)
 
 ## <a name="utils"></a>__Utils__
@@ -40,7 +40,7 @@ combine(hooks: Array.<Function -> CustomHook>) -> HigherOrderComponent (HOC)
  * @type {object}
  * @property {Array.<Function -> HOC>} hocs - list of higher order components (HOC);
  * @property {Array.<Function -> CustomHook>} hooks - list of functions which create custom hooks;
- * @property {Boolean} forwardRef - passing ref to component;
+ * @property {Boolean} forwardRef - passing ref to component (false by default);
  * @property {Object} defaultProps - set of default component props;
  * @property {Function -> Object} transformProps - props transformer to omit, filter, map props which are supposed to be passed
  * @property {Function -> Object} transformPropsBefore - props pre-transformer to omit, filter, map props which are supposed to be passed to custom hook composition and to transform props
@@ -102,12 +102,14 @@ const EnhancedButton = combine({
     `)
   ],
 
+  forwardRef: true, // false by default
+
   hooks: [
     withState(...),
     withCallbacks(...),
   ],
 
-  degaultProps: {
+  defaultProps: {
     type: 'button',
     animated: true,
   },
@@ -611,46 +613,67 @@ export default combine(
 useImperativeHandler<V>(createHandler: Function(state, ownProps) -> V, deps?: Array.<string>) -> CustomHook
 ```
 
-Creates custom hook based on [useImperativeHandler]().
-useImperativeHandle customizes the instance value that is exposed to parent components when using ref. As always, imperative code using refs should be avoided in most cases. useImperativeHandle should be used with forwardRef:
+Creates custom hook based on [useImperativeHandle](https://reactjs.org/docs/hooks-reference.html#useimperativehandle).
+useImperativeHandle customizes the instance value that is exposed to parent components when using ref. As always, imperative code using refs should be avoided in most cases. useImperativeHandle should be used with `forwardRef` by wrapping component with [React.forwardRef](https://reactjs.org/docs/forwarding-refs.html) or by using `forwardRef` param in config (check [`combine`](#combine) function above):
 
 ```javascript
 import React, { forwardRef } from 'react'
-import { combine, useImperativeHandler } from 'react-hooks-combine'
+import { combine, withRef, withImperativeHandle } from 'react-hooks-combine'
 
-const Input = () => (
+const Input = ({ inputRef }) => (
   <input type="text" />
 )
 
+// ref will be set automatically
 export default forwardRef(combine(
-  useImperativeHandler(
-    () => ({ focus: () => {} }),
-    [],
+  withRef('inputRef'),
+  withImperativeHandle(
+    (state, _ownProps) => ({ 
+      focus: () => {
+        state.inputRef.current.focus()
+      } 
+    }),
+    [...]
   )
-))
+))(Input)
+
+// or 
+
+export default combine({
+  forwardRef: true,
+  hooks: [
+    withRef('inputRef'),
+    withImperativeHandle((state, _ownProps) => ({ 
+      focus: () => { 
+        state.inputRef.current.focus() 
+      }
+    }), [...]),
+  ],
+})(Input)
+
 ```
 
-***IMPORTANT:*** you should provide ref for [useImperativeHandler]() by [React.forwardRef](), but it will work only for [useImperativeHandler](). If you want using ref in your component, you have to use [forwardRef]() property for [combine]() function.
+**IMPORTANT**
 
-If you use [forwardRef]() property you don't have to wrap component by [React.forwardRef]().
+__NB!__: There is a difference should be taken into considiration when you use [React.forwardRef](https://reactjs.org/docs/forwarding-refs.html) vs. `forwardRef` property.
+
+__NB!__: If __your goal is to use ref only for `withImperativeHandle`__, then you can __choose any way considered above__ ([React.forwardRef](https://reactjs.org/docs/forwarding-refs.html) of `forwardRef` param), but if __your goal is to use passing ref inside__ the component then __you must use__ `combine({ forwardRef: true, ... })`
 
 ```javascript
 import React from 'react'
-import { combine, useImperativeHandler } from 'react-hooks-combine'
+import { combine, withImperativeHandle } from 'react-hooks-combine'
 
 const Input = (props, ref) => (
   <input type="text" ref={ref} />
 )
 
+// Right way to use if you want ref inside input
 export default combine({
   forwardRef: true,
   hooks: [
-    useImperativeHandler(
-      () => ({ focus: () => {} }),
-      [],
-    ),
+    ...
   ],
-})
+})(Input)
 ```
 
 ### <a name="withDebugValue"></a>__`withDebugValue()`__
