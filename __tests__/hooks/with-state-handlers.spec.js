@@ -1,5 +1,8 @@
+import React from 'react'
+import { create } from 'react-test-renderer'
 import { renderHook, act } from 'react-hooks-testing-library'
 import { withStateHandlers } from '../../src/hooks'
+import { combine } from '../../src/combine'
 
 describe('With State Handlers hook', () => {
   test('should increment and decrement counter', () => {
@@ -38,5 +41,46 @@ describe('With State Handlers hook', () => {
     act(() => result.current.decrement())
 
     expect(result.current.count).toBe(3)
+  })
+
+  test('should not rerender component if no changes', () => {
+
+    let updateCount = 0
+
+    const Component = () => {
+      updateCount += 1
+      return (<span>component</span>)
+    }
+
+    const CombinedComponent = combine(
+      withStateHandlers({
+        count: 0,
+        innerCount: 1,
+      }, {
+        setCount: () => count => ({ count }),
+      })
+    )(Component)
+
+    const renderer = create(<CombinedComponent />)
+
+    expect(updateCount).toBe(1)
+
+    act(() => renderer.root.children[0].props.setCount(1))
+
+    expect(updateCount).toBe(2)
+
+    act(() => renderer.root.children[0].props.setCount(1))
+    act(() => renderer.root.children[0].props.setCount(1))
+
+    expect(updateCount).toBe(2)
+
+    act(() => renderer.root.children[0].props.setCount(1))
+    act(() => renderer.root.children[0].props.setCount(1))
+
+    expect(updateCount).toBe(2)
+
+    act(() => renderer.root.children[0].props.setCount(2))
+
+    expect(updateCount).toBe(3)
   })
 })

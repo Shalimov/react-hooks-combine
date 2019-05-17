@@ -9,7 +9,12 @@ export const withStateHandlers = (getState, actionHandlers) => (state, props) =>
   const initialState = isFunction(getState) ? getState(state, props) : getState
   const [localState, updater] = useState(initialState)
   const actionHandlersWithState = {}
-  const assignToState = updatedStatePart => updater({ ...localState, ...updatedStatePart })
+  const assignToState = (updatedStatePart) => {
+    const needUpdate = Object.entries(updatedStatePart).some(([key, value]) => localState[key] !== value)
+    if (needUpdate) {
+      updater({ ...localState, ...updatedStatePart })
+    }
+  }
 
   for (const [key, actionHandler] of Object.entries(actionHandlers)) {
     actionHandlersWithState[key] = compose(
