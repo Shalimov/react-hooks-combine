@@ -37,7 +37,13 @@ const combineFromConfig = (config, Component) => {
     const state = hooksComposition(transformedProps, ref)
     const allProps = { ...transformedProps, ...state }
 
-    return <ReferredComponent {...transformProps(allProps)} ref={ref} />
+    let passedRef
+
+    if (forwardRef) {
+      passedRef = ref
+    }
+
+    return <ReferredComponent {...transformProps(allProps)} ref={passedRef} />
   })
 
   if (defaultProps) {
