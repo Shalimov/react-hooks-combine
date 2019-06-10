@@ -1,6 +1,6 @@
 import { renderHook, act } from 'react-hooks-testing-library'
 
-import { withState, withCallbacks } from '../../src';
+import { withState, withCallbacks, withStateHandlers } from '../../src';
 import { repeatScenario } from '../utils'
 import { hookBuilder } from '../../src/hook-builder';
 
@@ -93,5 +93,55 @@ describe('Counter Hook', () => {
       expect(result.current.onToggle).not.toEqual(prevOnToggle)
       expect(result.current.expand).toBe(prevExpand)
     })
+  })
+
+  test(`
+  Creates custom hook to control counters state
+  - check whether state is up to date every update in callbacks`, () => {
+    const useCounterHook = hookBuilder([
+      withStateHandlers({
+        countA: 0,
+        countB: 0,
+      }, {
+        incA: ({ state: { countA } }) => ({ countA: countA + 1 }),
+        decA: ({ state: { countA } }) => ({ countA: countA - 1 }),
+        incB: ({ state }) => ({ countB: state.countB + 1 }),
+        decB: ({ state }) => ({ countB: state.countB - 1 }),
+      }),
+      withCallbacks({
+        onIncA: ({ incA }) => () => {
+          incA()
+        },
+
+        onIncB: ({ incB }) => () => {
+          incB()
+        },
+
+        onDecA: ({ decA }) => () => {
+          decA()
+        },
+
+        onDecB: ({ decB }) => () => {
+          decB()
+        },
+      }, []),
+    ])
+
+    const { result } = renderHook(() => useCounterHook(), {})
+
+    expect(result.current.countA).toBe(0)
+    expect(result.current.countB).toBe(0)
+
+    act(() => result.current.onIncB())
+    act(() => result.current.onIncB())
+    act(() => result.current.onIncA())
+
+    expect(result.current.countA).toBe(1)
+    expect(result.current.countB).toBe(2)
+
+    act(() => result.current.onDecB())
+
+    expect(result.current.countA).toBe(1)
+    expect(result.current.countB).toBe(1)
   })
 })

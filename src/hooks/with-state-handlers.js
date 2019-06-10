@@ -1,27 +1,41 @@
 import { useState } from 'react'
 
-import { isFunction, compose } from '../utils'
+import { isFunction } from '../utils'
 
-// TODO: get state as lazy func
-// TODO: updater -> should not react
-// Revise this method !!!
-export const withStateHandlers = (getState, actionHandlers) => (state, props) => {
-  const initialState = isFunction(getState) ? getState(state, props) : getState
-  const [localState, updater] = useState(initialState)
+export const withStateHandlers = (initialState, actionHandlers) => {
+  const initState = isFunction(initialState) ?
+    (state, props) => () => initialState(state, props) :
+    () => initialState
+
   const actionHandlersWithState = {}
+
+  let stateRef = null
+  let propsRef = null
+  let updateFn = null
+
   const assignToState = (updatedStatePart) => {
-    const needUpdate = Object.entries(updatedStatePart).some(([key, value]) => localState[key] !== value)
+    const needUpdate = Object.entries(updatedStatePart).some(([key, value]) => stateRef[key] !== value)
+
     if (needUpdate) {
-      updater({ ...localState, ...updatedStatePart })
+      updateFn({ ...stateRef, ...updatedStatePart })
     }
   }
 
   for (const [key, actionHandler] of Object.entries(actionHandlers)) {
-    actionHandlersWithState[key] = compose(
-      assignToState,
-      actionHandler(localState)
-    )
+    // eslint-disable-next-line no-loop-func
+    actionHandlersWithState[key] = (...args) => {
+      const result = actionHandler({ args, state: stateRef, props: propsRef })
+      assignToState(result)
+    }
   }
 
-  return { ...localState, ...actionHandlersWithState }
+  return (state, props) => {
+    const [localState, updater] = useState(initState(state, props))
+
+    updateFn = updater
+    propsRef = props
+    stateRef = localState
+
+    return { ...localState, ...actionHandlersWithState }
+  }
 }

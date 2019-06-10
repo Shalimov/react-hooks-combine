@@ -16,12 +16,6 @@ export const isPromiseLike = value => value && (
     (isFunction(value.then) && isFunction(value.catch))
 )
 
-export const compose = (...fns) => (
-  fns.reduce((prevFn, nextFn) => (
-    (...args) => prevFn(nextFn(...args))
-  ))
-)
-
 export const isCombineConfigMode = args => isObject(args[0])
 
 export const unwindLoop = (useCustomHook, funcDescriptions) => {

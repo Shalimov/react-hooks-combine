@@ -10,8 +10,8 @@ describe('With State Handlers hook', () => {
       () => withStateHandlers({
         count: 0,
       }, {
-        increment: ({ count }) => () => ({ count: count + 1 }),
-        decrement: ({ count }) => () => ({ count: count - 1 }),
+        increment: ({ state }) => ({ count: state.count + 1 }),
+        decrement: ({ state }) => ({ count: state.count - 1 }),
       })()
     )
 
@@ -28,8 +28,8 @@ describe('With State Handlers hook', () => {
   test('should increment and decrement counter using handlers', () => {
     const { result } = renderHook(
       () => withStateHandlers(({ count }) => ({ count }), {
-        increment: ({ count }) => () => ({ count: count + 1 }),
-        decrement: ({ count }) => () => ({ count: count - 1 }),
+        increment: ({ state }) => ({ count: state.count + 1 }),
+        decrement: ({ state }) => ({ count: state.count - 1 }),
       })({ count: 2 })
     )
 
@@ -57,7 +57,7 @@ describe('With State Handlers hook', () => {
         count: 0,
         innerCount: 1,
       }, {
-        setCount: () => count => ({ count }),
+        setCount: ({ args: [count] }) => ({ count }),
       })
     )(Component)
 
