@@ -83,7 +83,6 @@ const EnhancedButton = combine(
 export default EnhancedButton
 ```
 
-
 __Example (CombineConfig):__
 
 ```javascript
@@ -164,12 +163,12 @@ export default EnhancedPanel
 withStateHandlers(
   initialState: Object | Function(state: Object, ownProps: Object) -> Object,
   stateUpdaters: {
-    [key: string]: Function(state: Object, ownProps: Object) -> Function(...payload: any[]) -> Object
+    [key: string]: Function({ state: Object, ownProps: Object, args: Array.<any> }) -> Object
   }
 ) -> CustomHook
 ```
 An alternative to [`withState()`](#withState).
-Passes state object properties and immutable updater functions in a form of `Function(...payload: any[]) -> Object` to the wrapped component.
+Passes state object properties and immutable updater functions in a form of ` Function({ state: Object, ownProps: Object, args: Array.<any> }) -> Object` to the wrapped component.
 
 Every state updater function accepts state, props and payload and must return a new state or undefined. The new state is shallowly merged with the previous state. Returning undefined does not cause a component rerender.
 
@@ -187,10 +186,12 @@ const EnhancedPanel = combine(
     loading: false,
     data: null,
   }, {
-    expand: () => () => ({ collapsed: false }),
-    collapse: () => () => ({ collapsed: true }),
-    setLoadingState: () => loading => ({ loading }),
-    setData: () => data => ({ data })
+    expand: () => ({ collapsed: false }),
+    collapse: () => ({ collapsed: true }),
+    // example
+    toggle: ({ state: { collapsed } }) => ({ collapsed: !collapsed }),
+    setLoadingState: ({ args: [loading] }) => ({ loading }),
+    setData: ({ args: [data] }) => ({ data })
   }),
   withCallbacks({
     onCollapse: (state, ownProps) => () => {
@@ -198,6 +199,17 @@ const EnhancedPanel = combine(
         state.collapse()
       }
     },
+
+    onLoadData: (state, ownProps) => async () => {
+      state.setLoadingState(true)
+
+      // .... async
+      // .... async
+      // .... async
+      // .... async
+
+      state.setLoadingState(false)
+    }
     ...
   })
 )(Panel)

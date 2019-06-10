@@ -13,7 +13,7 @@ It has API Design similar to [Recompose](https://github.com/acdlite/recompose).
 ## Documentation
 The documentation is divided into several sections:
 - [API Reference](/docs/api-reference.md)
-- [How it works TBD](/docs/explanation.md)
+- [~~How it works~~ TBD](/docs/explanation.md)
 
 You can improve it by sending pull requests to this repository.
 
