@@ -83,4 +83,32 @@ describe('With State Handlers hook', () => {
 
     expect(updateCount).toBe(3)
   })
+
+  test('should not share state between hooked components', () => {
+    const Component = () => (<span>component</span>)
+
+    const CombinedComponent = combine(
+      withStateHandlers({
+        count: 0,
+      }, {
+        setCount: ({ args: [count] }) => ({ count }),
+      })
+    )(Component)
+
+    const renderer1 = create(<CombinedComponent />)
+    const renderer2 = create(<CombinedComponent />)
+
+    expect(renderer1.root.children[0].props.count).toBe(0)
+    expect(renderer2.root.children[0].props.count).toBe(0)
+
+    act(() => renderer1.root.children[0].props.setCount(1))
+
+    expect(renderer1.root.children[0].props.count).toBe(1)
+    expect(renderer2.root.children[0].props.count).toBe(0)
+
+    act(() => renderer2.root.children[0].props.setCount(2))
+
+    expect(renderer1.root.children[0].props.count).toBe(1)
+    expect(renderer2.root.children[0].props.count).toBe(2)
+  })
 })
