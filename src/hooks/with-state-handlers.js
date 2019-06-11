@@ -7,35 +7,38 @@ export const withStateHandlers = (initialState, actionHandlers) => {
     (state, props) => () => initialState(state, props) :
     () => initialState
 
-  const actionHandlersWithState = {}
-
-  let stateRef = null
-  let propsRef = null
-  let updateFn = null
-
-  const assignToState = (updatedStatePart) => {
-    const needUpdate = Object.entries(updatedStatePart).some(([key, value]) => stateRef[key] !== value)
-
-    if (needUpdate) {
-      updateFn({ ...stateRef, ...updatedStatePart })
-    }
-  }
-
-  for (const [key, actionHandler] of Object.entries(actionHandlers)) {
-    // eslint-disable-next-line no-loop-func
-    actionHandlersWithState[key] = (...args) => {
-      const result = actionHandler({ args, state: stateRef, props: propsRef })
-      assignToState(result)
-    }
-  }
+  const weekComponentRef = new WeakMap()
 
   return (state, props) => {
     const [localState, updater] = useState(initState(state, props))
 
-    updateFn = updater
-    propsRef = props
-    stateRef = localState
+    if (!weekComponentRef.has(updater)) {
+      const initialAttachedData = { state: localState, props, actionHandlers: {} }
+      weekComponentRef.set(updater, initialAttachedData)
 
-    return { ...localState, ...actionHandlersWithState }
+      const assignToState = (updatedStatePart) => {
+        const { state: inState } = weekComponentRef.get(updater)
+        const needUpdate = Object.entries(updatedStatePart).some(([key, value]) => inState[key] !== value)
+
+        if (needUpdate) {
+          updater({ ...inState, ...updatedStatePart })
+        }
+      }
+
+      for (const [key, actionHandler] of Object.entries(actionHandlers)) {
+        // eslint-disable-next-line no-loop-func
+        initialAttachedData.actionHandlers[key] = (...args) => {
+          const { state: inState, props: inProps } = weekComponentRef.get(updater)
+          const result = actionHandler({ args, state: inState, props: inProps })
+          assignToState(result)
+        }
+      }
+    }
+
+    const internals = weekComponentRef.get(updater)
+    internals.state = localState
+    internals.props = props
+
+    return { ...localState, ...internals.actionHandlers }
   }
 }
