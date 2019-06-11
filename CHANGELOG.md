@@ -1,3 +1,8 @@
+# 1.3.1
+
+### BUG
+- Fix sharing state between components while using withStateHandlers
+
 # 1.3.0
 
 ### BUGS
