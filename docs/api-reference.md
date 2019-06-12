@@ -323,8 +323,12 @@ import { combine, withCallback } from 'react-hooks-combine'
 
 import { ToogleButton } from './component'
 
+const someDeps = ['prop1', 'prop2', 'prop3']
+
 const EnhancedToggleButton = combine(
-  withCallback('onToggle', (state, ownProps) => )
+  withCallback('onToggle', (state, ownProps) => {
+    // ...
+  }, someDeps)
 )(ToggleButton)
 
 export default ToggleButton
