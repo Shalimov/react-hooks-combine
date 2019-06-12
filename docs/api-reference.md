@@ -11,7 +11,7 @@
     - [withStateHandlers()](#withStateHandlers)
     - [withReducer()](#withReducer)
   - [Callbacks](#withCallback)
-    - [withCallback()](#withCallbacks)
+    - [withCallback()](#withCallback)
     - [withCallbacks()](#withCallbacks)
   - [Memo](#withMemo)
     - [withMemo()](#withMemo)
