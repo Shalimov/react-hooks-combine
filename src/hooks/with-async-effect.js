@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { getDeps, isPromiseLike, getInternalCtor, isFunction } from '../utils'
 
@@ -20,6 +20,8 @@ export const withAsyncEffect = (params) => {
   return (state, props) => {
     const [innerState, setData] = useState({ loading: true, [dataName]: null, error: null })
 
+    const referedStateProps = useRef({ state, props })
+
     useEffect(() => {
       if (nonInitial) {
         setData({ loading: true, [dataName]: innerState[dataName], error: null })
@@ -27,7 +29,10 @@ export const withAsyncEffect = (params) => {
 
       nonInitial = true
 
-      const promise = asyncAction(state, props)
+      const promise = asyncAction(state, props, referedStateProps.current)
+
+      referedStateProps.current.state = state
+      referedStateProps.current.props = props
 
       if (!isPromiseLike(promise)) {
         throw Error(`withAsyncEffect expects Promise, got a: ${getInternalCtor(promise)}`)
