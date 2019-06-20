@@ -7,11 +7,9 @@ export const createWithEffect = useHook => (fn, dependencies) => (state, props) 
   const referedStateProps = useRef({ state, props })
 
   useHook(() => {
-    const prevSPContainer = referedStateProps.current
-    const dispose = fn(state, props, prevSPContainer)
+    const dispose = fn(state, props, referedStateProps.current)
 
-    prevSPContainer.state = state
-    prevSPContainer.props = props
+    referedStateProps.current = { state, props }
 
     return dispose
   }, deps)
