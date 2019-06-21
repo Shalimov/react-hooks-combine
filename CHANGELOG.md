@@ -1,3 +1,6 @@
+# 1.3.2
+- (withEffect, withLayoutEffect)'s effectHandler accepts prevStateProps object as third argument
+
 # 1.3.1
 
 ### BUG

@@ -475,7 +475,8 @@ const EnhancedCounter = combine(
 ### <a name="withEffect"></a>__`withEffect()`__
 
 ```javascript
-// @typedef {Function(state: Object, ownProps: Object) -> DisposeHandler?} EffectHandler
+// @typedef { state: Object, props: Object } PrevStateProps
+// @typedef {Function(state: Object, ownProps: Object, prevStateProps: PrevStateProps) -> DisposeHandler?} EffectHandler
 withEffect(effectHandler: EffectHandler, dependencies: Array.<string>) -> CustomHook
 ```
 
@@ -499,8 +500,12 @@ const EnhancedTimer = combine(
   withState('count', 'setCount', (_s, ownProps) => {
     return ownProps.initialCount
   }),
-  withEffect(({ setCount }, ownProps) => {
+  withEffect(({ setCount }, ownProps, prevStateProps) => {
+    const { state: prevState, props: prevProps } = prevStateProps
+
     const intervalId = setInterval(() => {
+      console.log(prevState, prevProps)
+
       setCount(count => count + 1)
     }, 1000)
 
@@ -515,7 +520,8 @@ const EnhancedTimer = combine(
 
 ### <a name="withLayoutEffect"></a>__`withLayoutEffect()`__
 ```javascript
-// @typedef {Function(state: Object, ownProps: Object) -> DisposeHandler?} LayoutEffectHandler
+// @typedef { state: Object, props: Object } PrevStateProps
+// @typedef {Function(state: Object, ownProps: Object, prevStateProps: PrevStateProps) -> DisposeHandler?} LayoutEffectHandler
 withLayoutEffect(effectHandler: LayoutEffectHandler, dependencies: Array.<string>) - CustomHook
 ```
 
