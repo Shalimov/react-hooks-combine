@@ -533,7 +533,8 @@ Prefer the [withEffect](#withEffect) to create custom hook based on [useEffect](
 
 ```javascript
 withAsyncEffect(config: {
-  asyncAction: Function(state: Object, ownProps: Object) -> Promise,
+  // @typedef { state: Object, props: Object } PrevStateProps
+  asyncAction: Function(state: Object, ownProps: Object, prevStateProps: PrevStateProps) -> Promise,
   disposeAction?: Function(),
   dataName?: string, // 'data' by default
   deps?: Array.<string>,
@@ -570,7 +571,8 @@ const EnhancedForm = (
   withAsyncEffect({
     deps: [],
     dataName: 'userData', // 'data' by default
-    asyncAction: ({ services }, ownProps) => {
+    asyncAction: ({ services }, ownProps, prevStateProps) => {
+      const prevUserId = prevStateProps.props.userId
       const { userService } = services
       return userService.get(ownProps.userId)
     },

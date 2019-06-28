@@ -79,4 +79,47 @@ describe('With Async Effect hook', () => {
     expect(result.current.loading).toBe(false)
     expect(result.current.asset).toBe('user_data')
   })
+
+  test('should check prev props are set correctly', async () => {
+    let prevProps = null
+    let currProps = null
+
+    const asyncHook = withAsyncEffect({
+      deps: ['offset'],
+      asyncAction: (state, props, prevStateProps) => {
+        currProps = props
+        prevProps = prevStateProps
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(Math.random())
+          }, 0)
+        })
+      },
+      dataName: 'score',
+    })
+
+    const {
+      rerender,
+      waitForNextUpdate,
+    } = renderHook(props => asyncHook({}, props), { initialProps: { offset: 1 } })
+
+    await waitForNextUpdate()
+
+    expect(prevProps.props.offset).toBe(1)
+    expect(currProps.offset).toBe(1)
+
+    rerender({ offset: 2 })
+
+    await waitForNextUpdate()
+
+    expect(prevProps.props.offset).toBe(1)
+    expect(currProps.offset).toBe(2)
+
+    rerender({ offset: 3 })
+
+    await waitForNextUpdate()
+
+    expect(prevProps.props.offset).toBe(2)
+    expect(currProps.offset).toBe(3)
+  })
 })

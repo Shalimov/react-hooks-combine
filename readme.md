@@ -11,9 +11,7 @@ It has API Design similar to [Recompose](https://github.com/acdlite/recompose).
 
 ---
 ## Documentation
-The documentation is divided into several sections:
-- [API Reference](/docs/api-reference.md)
-- [~~How it works~~ TBD](/docs/explanation.md)
+Documentation can be found here: [API Reference](/docs/api-reference.md)
 
 You can improve it by sending pull requests to this repository.
 
