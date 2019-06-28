@@ -1,3 +1,0 @@
-# How It Works
-
-...TBD
