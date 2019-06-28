@@ -1,5 +1,5 @@
 {
-  "version": "1.3.2",
+  "version": "1.3.3",
   "name": "react-hooks-combine",
   "description": "React hooks powered, recompose like utility belt for ladies and gentlemen.",
   "main": "dist/index.js",
