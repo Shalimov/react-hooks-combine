@@ -1,32 +1,26 @@
 import { useEffect, useState, useRef } from 'react'
 
-import { getDeps, isPromiseLike, getInternalCtor, isFunction } from '../utils'
+import { getDeps, isPromiseLike, getInternalCtor } from '../utils'
 
 export const withAsyncEffect = (params) => {
-  let nonInitial = false
   const {
     asyncAction,
     disposeAction,
     dataName,
     deps,
   } = { dataName: 'data', ...params }
-  const resetNonInitialStatus = () => { nonInitial = false }
-
-  const disposeWrapper = isFunction(disposeAction) ? () => {
-    resetNonInitialStatus()
-    disposeAction()
-  } : resetNonInitialStatus
 
   return (state, props) => {
     const referedStateProps = useRef({ state, props })
+    const invalidartedRun = useRef(false)
     const [innerState, setData] = useState({ loading: true, [dataName]: null, error: null })
 
     useEffect(() => {
-      if (nonInitial) {
+      if (invalidartedRun.current) {
         setData({ loading: true, [dataName]: innerState[dataName], error: null })
       }
 
-      nonInitial = true
+      invalidartedRun.current = true
 
       const promise = asyncAction(state, props, referedStateProps.current)
 
@@ -42,7 +36,7 @@ export const withAsyncEffect = (params) => {
         setData({ loading: false, [dataName]: innerState[dataName], error })
       })
 
-      return disposeWrapper
+      return disposeAction
     }, getDeps({ ...state, ...props }, deps))
 
     return innerState

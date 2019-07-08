@@ -17,11 +17,14 @@ export const withStateHandlers = (initialState, actionHandlers) => {
       weekComponentRef.set(updater, initialAttachedData)
 
       const assignToState = (updatedStatePart) => {
-        const { state: inState } = weekComponentRef.get(updater)
+        const internals = weekComponentRef.get(updater)
+        const { state: inState } = internals
         const needUpdate = Object.entries(updatedStatePart).some(([key, value]) => inState[key] !== value)
 
         if (needUpdate) {
-          updater({ ...inState, ...updatedStatePart })
+          const bufferedState = { ...inState, ...updatedStatePart }
+          internals.state = bufferedState
+          updater(bufferedState)
         }
       }
 
