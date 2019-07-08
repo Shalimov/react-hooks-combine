@@ -1,3 +1,8 @@
+# 1.3.4
+### BUG
+- Fix withAsyncEffect loading state issue
+- Fix withStateHandlers tick issue
+
 # 1.3.3
 - withAsyncEffect's effectHandler accepts prevStateProps object as third argument
 
