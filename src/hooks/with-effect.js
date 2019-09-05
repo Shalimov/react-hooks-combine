@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import { getDeps } from '../utils'
 
-export const createWithEffect = useHook => (fn, dependencies) => (state, props) => {
+export const createWithEffect = (useHook) => (fn, dependencies) => (state, props) => {
   const deps = getDeps({ ...state, ...props }, dependencies)
   const referedStateProps = useRef({ state, props })
 

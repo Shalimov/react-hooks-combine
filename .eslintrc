@@ -27,6 +27,7 @@
     "max-len": 0,
     "no-restricted-syntax": 0,
     "react/jsx-filename-extension": 0,
+    "react/jsx-props-no-spreading": 0,
     "operator-linebreak": [
       2,
       "after"

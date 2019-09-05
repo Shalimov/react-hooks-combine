@@ -3,7 +3,7 @@ import { isFunction } from './utils'
 const merge = (currentState, prevState) => ({ ...currentState, ...prevState })
 
 export const hookBuilder = (combineFuncs) => {
-  const blackSheepIndex = combineFuncs.findIndex(fn => !isFunction(fn))
+  const blackSheepIndex = combineFuncs.findIndex((fn) => !isFunction(fn))
 
   if (blackSheepIndex !== -1) {
     throw Error(`

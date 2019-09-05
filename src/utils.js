@@ -8,15 +8,15 @@ export const getInternalCtor = (value) => {
   return internalClass
 }
 
-export const isFunction = fn => getInternalCtor(fn) === 'Function'
-export const isObject = obj => getInternalCtor(obj) === 'Object'
+export const isFunction = (fn) => getInternalCtor(fn) === 'Function'
+export const isObject = (obj) => getInternalCtor(obj) === 'Object'
 
-export const isPromiseLike = value => value && (
+export const isPromiseLike = (value) => value && (
   getInternalCtor(value) === 'Promise' ||
     (isFunction(value.then) && isFunction(value.catch))
 )
 
-export const isCombineConfigMode = args => isObject(args[0])
+export const isCombineConfigMode = (args) => isObject(args[0])
 
 export const unwindLoop = (useCustomHook, funcDescriptions) => {
   const FuncCtor = Function
@@ -54,10 +54,10 @@ export const prop = (obj, path) => {
 }
 
 export const getDeps = (source, depsNames) => (Array.isArray(depsNames) ?
-  depsNames.map(dep => prop(source, dep)) :
+  depsNames.map((dep) => prop(source, dep)) :
   depsNames)
 
-export const defaultProps = props => (Component) => {
+export const defaultProps = (props) => (Component) => {
   if (typeof props !== 'object') {
     throw Error(`defaultProps expects object, got a ${getInternalCtor(props)}`)
   }
@@ -68,7 +68,7 @@ export const defaultProps = props => (Component) => {
   return Component
 }
 
-export const identity = value => value
+export const identity = (value) => value
 
 // eslint-disable-next-line
 export const flow = (...callbacks) => Component => callbacks.reduce((Component, callback) => callback(Component), Component)
