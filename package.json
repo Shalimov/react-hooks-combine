@@ -1,5 +1,5 @@
 {
-  "version": "1.4.0",
+  "version": "1.4.1",
   "name": "react-hooks-combine",
   "description": "React hooks powered, recompose like utility belt for ladies and gentlemen.",
   "main": "dist/index.js",
@@ -54,6 +54,7 @@
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
+    "@testing-library/react-hooks": "^2.0.1",
     "@types/jest": "^24.0.12",
     "babel-jest": "^24.7.1",
     "eslint": "6.3.0",
@@ -73,7 +74,5 @@
     "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-uglify": "^6.0.2"
   },
-  "dependencies": {
-    "@testing-library/react-hooks": "^2.0.1"
-  }
+  "dependencies": {}
 }

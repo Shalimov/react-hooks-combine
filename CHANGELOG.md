@@ -1,3 +1,6 @@
+# 1.4.1
+- Fix package json issues
+
 # 1.4.0
 - Add errorName setting for withAsyncEffect hook creator
 
