@@ -1,3 +1,6 @@
+# 1.4.0
+- Add errorName setting for withAsyncEffect hook creator
+
 # 1.3.4
 ### BUG
 - Fix withAsyncEffect loading state issue

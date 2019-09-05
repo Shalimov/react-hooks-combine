@@ -1,8 +1,8 @@
-import { renderHook, act } from 'react-hooks-testing-library'
+import { renderHook, act } from '@testing-library/react-hooks'
 
-import { withState, withCallbacks, withStateHandlers } from '../../src';
+import { withState, withCallbacks, withStateHandlers } from '../../src'
 import { repeatScenario } from '../utils'
-import { hookBuilder } from '../../src/hook-builder';
+import { hookBuilder } from '../../src/hook-builder'
 
 describe('Counter Hook', () => {
   test(`
@@ -14,7 +14,7 @@ describe('Counter Hook', () => {
       withState('expand', 'setExpand', false),
       withCallbacks({
         onToggle: ({ setExpand }) => () => {
-          setExpand(exp => !exp)
+          setExpand((exp) => !exp)
         },
       }, []),
     ])
@@ -44,7 +44,7 @@ describe('Counter Hook', () => {
       withState('expand', 'setExpand', false),
       withCallbacks({
         onToggle: ({ setExpand }) => () => {
-          setExpand(exp => !exp)
+          setExpand((exp) => !exp)
         },
       }, ['expand']),
     ])
@@ -74,7 +74,7 @@ describe('Counter Hook', () => {
       withState('expand', 'setExpand', false),
       withCallbacks({
         onToggle: ({ setExpand }) => () => {
-          setExpand(exp => !exp)
+          setExpand((exp) => !exp)
         },
       }),
     ])

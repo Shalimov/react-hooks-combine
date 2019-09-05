@@ -1,4 +1,4 @@
-import { renderHook, act } from 'react-hooks-testing-library'
+import { renderHook, act } from '@testing-library/react-hooks'
 import { withAsyncEffect } from '../../src/hooks'
 
 describe('With Async Effect hook', () => {
@@ -80,6 +80,66 @@ describe('With Async Effect hook', () => {
     expect(result.current.asset).toBe('user_data')
   })
 
+  test('should use name `error` for property which contains error if happened', () => {
+    let expectedReject = null
+
+    const asyncAction = () => ({
+      then: (res, rej) => {
+        expectedReject = rej
+      },
+      catch: () => {
+      },
+    })
+
+    const { result } = renderHook(
+      () => withAsyncEffect({
+        deps: [],
+        asyncAction,
+      })()
+    )
+
+    expect(result.current.loading).toBe(true)
+    expect(result.current.error).toBe(null)
+
+
+    act(() => expectedReject(new Error('Some Error')))
+
+    expect(result.current.loading).toBe(false)
+    expect(result.current.error).toBeInstanceOf(Error)
+    expect(result.current.error.message).toBe('Some Error')
+  })
+
+  test('should be able to rename data prop', () => {
+    let expectedReject = null
+
+    const asyncAction = () => ({
+      then: (res, rej) => {
+        expectedReject = rej
+      },
+      catch: () => {
+      },
+    })
+
+    const { result } = renderHook(
+      () => withAsyncEffect({
+        deps: [],
+        errorName: 'someError',
+        asyncAction,
+      })()
+    )
+
+    expect(result.current.loading).toBe(true)
+    expect(result.current.error).toBeUndefined()
+    expect(result.current.someError).toBe(null)
+
+    act(() => expectedReject(new Error('Some Error')))
+
+    expect(result.current.loading).toBe(false)
+    expect(result.current.error).toBeUndefined()
+    expect(result.current.someError).toBeInstanceOf(Error)
+    expect(result.current.someError.message).toBe('Some Error')
+  })
+
   test('should check prev props are set correctly', async () => {
     let prevProps = null
     let currProps = null
@@ -102,7 +162,7 @@ describe('With Async Effect hook', () => {
       result,
       rerender,
       waitForNextUpdate,
-    } = renderHook(props => asyncHook({}, props), { initialProps: { offset: 1 } })
+    } = renderHook((props) => asyncHook({}, props), { initialProps: { offset: 1 } })
 
     expect(result.current.loading).toBe(true)
 

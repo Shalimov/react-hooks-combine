@@ -1,5 +1,6 @@
 import React from 'react'
-import { create, act } from 'react-test-renderer'
+import { create } from 'react-test-renderer'
+import { act } from '@testing-library/react-hooks'
 
 import { combine, withReducer, withImperativeHandle } from '../../src'
 

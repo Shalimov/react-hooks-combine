@@ -1,5 +1,5 @@
 import React, { createContext } from 'react'
-import { renderHook } from 'react-hooks-testing-library'
+import { renderHook } from '@testing-library/react-hooks'
 import { withContext } from '../../src/hooks'
 
 describe('With Context hook', () => {

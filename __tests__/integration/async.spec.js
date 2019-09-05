@@ -27,7 +27,7 @@ const mockData = (multiplier = 1) => [
 ]
 
 const asyncAction = (_, { multiplier }) => ({
-  then: resolve => resolve(mockData(multiplier)),
+  then: (resolve) => resolve(mockData(multiplier)),
   catch: () => {},
 })
 
@@ -117,7 +117,7 @@ describe('Async Hook Integration', () => {
       renderer = create(<EnhancedComponent multiplier={0} />)
     })
 
-    const updateComponent = multiplier => renderer.update(<EnhancedComponent multiplier={multiplier} />)
+    const updateComponent = (multiplier) => renderer.update(<EnhancedComponent multiplier={multiplier} />)
 
     repeatScenario(10, (i) => {
       const prevProps = renderer.root.children[0].props

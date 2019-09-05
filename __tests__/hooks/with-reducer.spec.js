@@ -1,4 +1,4 @@
-import { renderHook, act } from 'react-hooks-testing-library'
+import { renderHook, act } from '@testing-library/react-hooks'
 import { withReducer } from '../../src/hooks'
 
 const initialState = { count: 0 };

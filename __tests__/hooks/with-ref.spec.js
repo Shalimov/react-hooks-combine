@@ -1,4 +1,4 @@
-import { renderHook } from 'react-hooks-testing-library'
+import { renderHook } from '@testing-library/react-hooks'
 import { withRef } from '../../src/hooks'
 
 describe('With Ref hook', () => {
