@@ -1,3 +1,6 @@
+# 1.4.2
+- Internal cleanup
+
 # 1.4.1
 - Fix package json issues
 
