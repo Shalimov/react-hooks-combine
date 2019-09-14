@@ -23,4 +23,19 @@ describe('With Context hook', () => {
 
     expect(result.current.testContext).toBe('context_value')
   })
+
+  test('should use transform fn param to transform or extract some prop from context', () => {
+    const value = { services: 'services', storages: 'storages' }
+    const TestContext = createContext(value)
+
+    /* eslint-disable */
+    const wrapper = ({ children }) => (
+      <TestContext.Provider value={value}>{children}</TestContext.Provider>
+    )
+    /* eslint-enable */
+
+    const { result } = renderHook(() => withContext('services', TestContext, ({ services }) => services)(), { wrapper })
+
+    expect(result.current.services).toBe(value.services)
+  })
 })

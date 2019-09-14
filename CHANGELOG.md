@@ -1,3 +1,6 @@
+# 1.5.0
+- Add withContext transform option
+
 # 1.4.2
 - Internal cleanup
 

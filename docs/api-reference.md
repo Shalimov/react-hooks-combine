@@ -584,11 +584,14 @@ const EnhancedForm = (
 ### <a name="withContext"></a>__`withContext()`__
 
 ```javascript
-withContext(contextName: string, contextObject: ReactContextObject) -> CustomHook
+// @typedef {Function(context: ReactContextObject) -> any} TransformFunc
+withContext(contextName: string, contextObject: ReactContextObject, transform: TransformFunc) -> CustomHook
 ```
 
 Creates a custom hook based on [useContext](https://reactjs.org/docs/hooks-reference.html#usecontext).
 Accepts alias of context object in final state and a context object (the value returned from React.createContext) and returns the current context value for that context. The current context value is determined by the value prop of the nearest <MyContext.Provider> above the calling component in the tree.
+There is a third optional parameter -> transform function that can be used as property picker from context in case if the
+whole context is not necessary (or to accomplish any other requirement)
 
 When the nearest <MyContext.Provider> above the component updates, this Hook will trigger a rerender with the latest context value passed to that MyContext provider.
 
@@ -598,11 +601,22 @@ import { combine, withContext, withCallbacks } from 'react-hooks-combine'
 import { APIServicesContext } from '...'
 import { EditForm } from '...'
 
+
 const EnhancedForm = combine(
-  withContext('services', APIServicesContext),
+  withContext('userService', APIServicesContext, apiContext => apiContext.userService),
   withCallbacks({
-    onSave: ({ services }, ownProps) => (userData) => {
-      const { userService } = services
+    onSave: ({ userService }, ownProps) => (userData) => {
+      userService.save(userData)
+    }
+  }, [])
+)(EditForm)
+
+// --------- OR ---------
+
+const EnhancedForm = combine(
+  withContext('userService', APIServicesContext, (apiContext) => apiContext.userService),
+  withCallbacks({
+    onSave: ({ userService }, ownProps) => (userData) => {
       userService.save(userData)
     }
   }, [])

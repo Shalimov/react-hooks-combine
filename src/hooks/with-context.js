@@ -1,6 +1,8 @@
 import { useContext } from 'react'
 
-export const withContext = (contextName, Context) => () => {
+import { identity } from '../utils'
+
+export const withContext = (contextName, Context, transform = identity) => () => {
   const context = useContext(Context)
-  return { [contextName]: context }
+  return { [contextName]: transform(context) }
 }
