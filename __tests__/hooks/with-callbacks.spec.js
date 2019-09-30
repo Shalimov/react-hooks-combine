@@ -5,7 +5,7 @@ describe('With Callbacks hook', () => {
   test('should increment counter by handler', () => {
     let count = 0
     const { result } = renderHook(
-      props => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
+      (props) => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
       { initialProps: { step: 5 } }
     )
 
@@ -18,7 +18,7 @@ describe('With Callbacks hook', () => {
   test('should not create a new callback after rerender', () => {
     let count = 0
     const { result, rerender } = renderHook(
-      props => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
+      (props) => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
       { initialProps: { step: 5 } }
     )
 
@@ -37,7 +37,7 @@ describe('With Callbacks hook', () => {
   test('should create a new callback after rerender', () => {
     let count = 0
     const { result, rerender } = renderHook(
-      props => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
+      (props) => withCallback('increment', (_, { step }) => () => { count += step }, ['step'])(props, props),
       { initialProps: { step: 5 } }
     )
 
@@ -56,7 +56,7 @@ describe('With Callbacks hook', () => {
   test('should increment and decrement counter by handlers', () => {
     let count = 0
     const { result } = renderHook(
-      props => withCallbacks({
+      (props) => withCallbacks({
         increment: () => jest.fn(() => { count += 1 }),
         decrement: () => jest.fn(() => { count -= 1 }),
       }, ['id'])(props, props),
@@ -80,7 +80,7 @@ describe('With Callbacks hook', () => {
   test('should works with callback', () => {
     let count = 0
     const { result, rerender } = renderHook(
-      props => withCallbacks({
+      (props) => withCallbacks({
         increment: {
           func: () => () => { count += 1 },
           deps: ['value'],

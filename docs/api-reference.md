@@ -537,6 +537,7 @@ withAsyncEffect(config: {
   asyncAction: Function(state: Object, ownProps: Object, prevStateProps: PrevStateProps) -> Promise,
   disposeAction?: Function(),
   dataName?: string, // 'data' by default
+  loadingName?: string, // 'loading' by default
   errorName?: string, // 'error' by default
   deps?: Array.<string>,
 }) -> CustomHook

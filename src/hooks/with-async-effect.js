@@ -7,18 +7,28 @@ export const withAsyncEffect = (params) => {
     asyncAction,
     disposeAction,
     dataName,
+    loadingName,
     errorName,
     deps,
-  } = { dataName: 'data', errorName: 'error', ...params }
+  } = {
+    dataName: 'data',
+    errorName: 'error',
+    loadingName: 'loading',
+    ...params,
+  }
 
   return (state, props) => {
     const referedStateProps = useRef({ state, props })
     const invalidartedRun = useRef(false)
-    const [innerState, setData] = useState({ loading: true, [dataName]: null, [errorName]: null })
+    const [innerState, setData] = useState({
+      [loadingName]: true,
+      [dataName]: null,
+      [errorName]: null,
+    })
 
     useEffect(() => {
       if (invalidartedRun.current) {
-        setData({ loading: true, [dataName]: innerState[dataName], [errorName]: null })
+        setData({ [loadingName]: true, [dataName]: innerState[dataName], [errorName]: null })
       }
 
       invalidartedRun.current = true
@@ -32,9 +42,9 @@ export const withAsyncEffect = (params) => {
       }
 
       promise.then((result) => {
-        setData({ loading: false, [dataName]: result, [errorName]: null })
+        setData({ [loadingName]: false, [dataName]: result, [errorName]: null })
       }, (error) => {
-        setData({ loading: false, [dataName]: innerState[dataName], [errorName]: error })
+        setData({ [loadingName]: false, [dataName]: innerState[dataName], [errorName]: error })
       })
 
       return disposeAction

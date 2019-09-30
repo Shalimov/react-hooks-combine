@@ -64,7 +64,7 @@ describe('Utils', () => {
       - check with object param should return false
       - check with string param should return false
   `, () => {
-    const testPromise = new Promise(resolve => resolve('result'))
+    const testPromise = new Promise((resolve) => resolve('result'))
     const testPromise1 = new Promise(() => ({}))
 
     function fakePromise() {}

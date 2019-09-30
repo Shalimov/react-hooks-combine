@@ -3,7 +3,7 @@ import { withReducer } from '../../src/hooks'
 
 const initialState = { count: 0 };
 
-const init = count => count
+const init = (count) => count
 
 const reducer = (state, action) => {
   switch (action.type) {

@@ -140,6 +140,35 @@ describe('With Async Effect hook', () => {
     expect(result.current.someError.message).toBe('Some Error')
   })
 
+
+  test('should be able to loading prop', () => {
+    let expectedResolve = null
+
+    const asyncAction = () => ({
+      then: (res) => {
+        expectedResolve = res
+      },
+      catch: () => {
+      },
+    })
+
+    const { result } = renderHook(
+      () => withAsyncEffect({
+        deps: [],
+        loadingName: 'loadingAsset',
+        asyncAction,
+      })()
+    )
+
+    expect(result.current.loading).toBeUndefined()
+    expect(result.current.loadingAsset).toBe(true)
+
+    act(() => expectedResolve())
+
+    expect(result.current.loading).toBeUndefined()
+    expect(result.current.loadingAsset).toBe(false)
+  })
+
   test('should check prev props are set correctly', async () => {
     let prevProps = null
     let currProps = null

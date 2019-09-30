@@ -34,7 +34,7 @@ describe('Combine', () => {
     // eslint-disable-next-line
     const HocComponent = ({ children }) => (<div>{children}</div>)
 
-    const hoc = propValue => ChildComponent => () => (
+    const hoc = (propValue) => (ChildComponent) => () => (
       <HocComponent>
         <ChildComponent additionPropFromHOC={propValue} />
       </HocComponent>

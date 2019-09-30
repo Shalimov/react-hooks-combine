@@ -1,3 +1,6 @@
+# 1.6.0
+- Add loadingName setting for withAsyncEffect hook creator
+
 # 1.5.0
 - Add withContext transform option
 
