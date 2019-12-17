@@ -6,7 +6,7 @@ import {
   isCombineConfigMode,
   defaultProps as withDefaultProps,
   identity,
-  flow
+  enchance
 } from './utils'
 
 const combineFromConfig = (config, Component) => {
@@ -47,10 +47,10 @@ const combineFromConfig = (config, Component) => {
   })
 
   if (defaultProps) {
-    withDefaultProps(defaultProps)(ExtendedComponent)
+    withDefaultProps(defaultProps, ExtendedComponent)
   }
 
-  return flow(...hocs)(ExtendedComponent)
+  return enchance(ExtendedComponent, ...hocs)
 }
 
 export const combine = (...hooks) => (Component) => {

@@ -4,6 +4,7 @@
 ## __Content:__
 
 - [Utils](#utils)
+  - [pipe()](#pipe)
   - [combine()](#combine)
 - [Hook Wrappers](#hookWrappers)
   - [State Related](#withState)
@@ -28,10 +29,66 @@
 
 ## <a name="utils"></a>__Utils__
 
+### <a name="pipe"></a>__`pipe()`__
+```javascript
+pipe(...hooks: Array.<Function -> CustomHook>) -> CustomHook (HOC)
+```
+
+Function creates a custom hook based on povoided hooks. Custom hook expects to accept component props and returns object with prefilled data from hooks (Check example above to become a Jedi).
+
+__Example:__
+
+```javascript
+import { pipe, withAsyncEffect, withCallbacks } from 'react-hooks-combine'
+
+const useCurrentUser = pipe(
+  withContext('repository', RepositoryContext),
+  withAsyncEffect({
+    deps: [],
+    dataName: 'details',
+    loadingName: 'loading',
+    async asyncAction({ repository } /* state */, props) {
+      const { userRepository } = repository
+      const details = await userRepository.getCurrentUser()
+      return details
+    }
+  }),
+  // check withCallbacks section for syntax
+  withCallbacks({
+    onDelete: () => () => {
+      ...
+    },
+
+    onUpdate: {
+      deps: [...],
+      func: () => () => {},
+    },
+  }, [...]),
+)
+
+export const UserView = (props) => {
+  // useCurrentUser is a custom hook
+  // and returns object which contains properties:
+  // details, onDelete, onUpdate, loading, repository
+  // details contains info that comes from some external source by async request
+  const user = useCurrentUser(props)
+
+  return (
+    <div>
+      <h2>Hello {user.details.firstName</h2>
+      ...
+      <button click={user.onUpdate}>Update</button>
+      <button click={user.onDelete}>Delete</button>
+    </div>
+  )
+}
+```
+
+
 ### <a name="combine"></a>__`combine()`__
 
 ```javascript
-combine(hooks: Array.<Function -> CustomHook>) -> HigherOrderComponent (HOC)
+combine(...hooks: Array.<Function -> CustomHook>) -> HigherOrderComponent (HOC)
 ```
 
 ```javascript

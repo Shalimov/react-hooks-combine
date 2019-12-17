@@ -1,3 +1,7 @@
+# 1.7.0
+- Export #pipe function to create custom hook based on hooks collection to replace combine in case if it's necessary
+- Refine utils internals
+
 # 1.6.0
 - Add loadingName setting for withAsyncEffect hook creator
 

@@ -7,7 +7,7 @@ import {
   getDeps,
   defaultProps,
   identity,
-  flow
+  enchance
 } from '../src/utils'
 
 describe('Utils', () => {
@@ -165,10 +165,10 @@ describe('Utils', () => {
       age: 20,
     }
 
-    expect(defaultProps(null)(Component)).toEqual(Component)
-    expect(defaultProps(null)(Component).defaultProps).toBe(null)
+    expect(defaultProps(null, Component)).toEqual(Component)
+    expect(defaultProps(null, Component).defaultProps).toBe(null)
 
-    expect(defaultProps(props)(Component).defaultProps).toEqual(props)
+    expect(defaultProps(props, Component).defaultProps).toEqual(props)
   })
 
   test(`
@@ -228,11 +228,12 @@ describe('Utils', () => {
       return null
     }
 
-    const EnhancedComponent = flow(
+    const EnhancedComponent = enchance(
+      InitComponent,
       enhancer,
       enhancer1,
       enhancer2('loading', true)
-    )(InitComponent)
+    )
 
     expect(EnhancedComponent.enhanced).toBe(true)
     expect(EnhancedComponent.enhanced1).toBe(true)
