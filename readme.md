@@ -29,6 +29,84 @@ __Install (choose preferable way)__
 
 __Then...__
 
+```javascript
+import React from 'react'
+
+import { withState, pipe, withCallbacks } from 'react-hooks-combine'
+
+const useCount = pipe(
+  withState('count', 'setCount', 0),
+  // try to not forget about dependencies since it's hooks, not a hocs
+  withCallbacks({
+    increment: ({ count, setCount }) => () => setCount(count + 1),
+    decrement: ({ count, setCount }) => () => setCount(count - 1),
+  })
+)
+
+function Counter() {
+  const { count, increment, decrement } = useCount()
+
+  return (
+    <div>
+      <button onClick={decrement}>-1</button>
+      {count}
+      <button onClick={increment}>+1</button>
+    </div>
+  )
+}
+
+export default Counter
+```
+
+__OR__
+
+```javascript
+import { pipe, withAsyncEffect, withCallbacks } from 'react-hooks-combine'
+
+const useCurrentUser = pipe(
+  withContext('repository', RepositoryContext),
+  withAsyncEffect({
+    deps: [],
+    dataName: 'details',
+    loadingName: 'loading',
+    async asyncAction({ repository } /* state */, props) {
+      const { userRepository } = repository
+      const details = await userRepository.getCurrentUser()
+      return details
+    }
+  }),
+  // check withCallbacks section for syntax
+  withCallbacks({
+    onDelete: () => () => {
+      ...
+    },
+
+    onUpdate: {
+      deps: [...],
+      func: () => () => {},
+    },
+  }, [...]),
+)
+
+export const UserView = (props) => {
+  // useCurrentUser is a custom hook
+  // and returns object which contains properties:
+  // details, onDelete, onUpdate, loading, repository
+  // details contains info that comes from some external source by async request
+  const user = useCurrentUser(props)
+
+  return (
+    <div>
+      <h2>Hello {user.details.firstName</h2>
+      ...
+      <button click={user.onUpdate}>Update</button>
+      <button click={user.onDelete}>Delete</button>
+    </div>
+  )
+}
+```
+
+__OR__
 
 ```javascript
 // component.jsx
