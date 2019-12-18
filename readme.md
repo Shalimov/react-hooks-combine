@@ -205,7 +205,7 @@ export default combine(
       dispatch({ type: DEC })
     }
   }, ['counterState']), // <-  deps for useCallback (CHECK API TO LEARN MORE)
-)
+)(CounterComponent)
 
 ```
 __OR__
@@ -227,7 +227,7 @@ export default combine(
       setCount(count => count - 1) // function could be used
     }
   }, ['count']), // <-  deps for useCallback (CHECK API TO LEARN MORE)
-)
+)(CounterComponent)
 ```
 
 __OR WHICHEVER YOU LIKE...__

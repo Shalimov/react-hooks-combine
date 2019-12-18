@@ -1,5 +1,8 @@
+# 1.7.2
+- Update internals and readme.md
+
 # 1.7.1
-- Update internals and Readme.md
+- Update internals and readme.md
 
 # 1.7.0
 - Export #pipe function to create custom hook based on hooks collection to replace combine in case if it's necessary
