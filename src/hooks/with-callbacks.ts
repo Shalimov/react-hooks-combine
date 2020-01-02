@@ -1,12 +1,12 @@
 import { useCallback } from "react";
 
-import { KVPair, FnCfg } from "../types";
+import { IKVPair, IFnCfg } from "../types";
 import { unwindLoop, getDeps, isObject } from "../utils";
 
-export type CallbackFunc = (state: KVPair, props: KVPair) => any;
+export type CallbackFunc = (state: IKVPair, props: IKVPair) => any;
 
 export const withCallbacks = (
-  callbacks: KVPair<FnCfg<CallbackFunc>>,
+  callbacks: IKVPair<IFnCfg<CallbackFunc>>,
   dependencies: string[]
 ) => {
   const unrolledCalls = unwindLoop<CallbackFunc>(
@@ -15,8 +15,8 @@ export const withCallbacks = (
       let depNames: string[] = deps;
 
       if (isObject(fnCfg)) {
-        activeFn = (<FnCfg<CallbackFunc>>fnCfg).func;
-        depNames = (<FnCfg<CallbackFunc>>fnCfg).deps;
+        activeFn = (<IFnCfg<CallbackFunc>>fnCfg).func;
+        depNames = (<IFnCfg<CallbackFunc>>fnCfg).deps;
       }
 
       const activeDeps = getDeps({ ...state, ...props }, depNames);
@@ -25,7 +25,7 @@ export const withCallbacks = (
     callbacks
   );
 
-  return (state: KVPair, props: KVPair): KVPair =>
+  return (state: IKVPair, props: IKVPair): IKVPair =>
     unrolledCalls(dependencies, state, props);
 };
 
@@ -33,7 +33,7 @@ export const withCallback = <T>(
   callbackName: string,
   callback: CallbackFunc,
   dependencies: string[]
-) => (state: KVPair, props: KVPair): KVPair<T> => {
+) => (state: IKVPair, props: IKVPair): IKVPair<T> => {
   const deps = getDeps({ ...state, ...props }, dependencies);
   return { [callbackName]: useCallback(callback(state, props), deps) };
 };

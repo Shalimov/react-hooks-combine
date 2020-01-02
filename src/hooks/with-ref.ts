@@ -1,11 +1,11 @@
 import { useRef } from "react";
 
-import { CustomHook, KVPair } from "../types";
+import { ICustomHook, IKVPair } from "../types";
 
 export const withRef = <T>(
   refName: string,
   initialValue: T
-): CustomHook => (): KVPair<React.MutableRefObject<T>> => {
+): ICustomHook => (): IKVPair<React.MutableRefObject<T>> => {
   const ref = useRef(initialValue);
   return { [refName]: ref };
 };

@@ -1,18 +1,18 @@
 import { useState } from "react";
 
-import { KVPair, CustomHook } from "../types";
+import { IKVPair, ICustomHook } from "../types";
 import { isFunction } from "../utils";
 
 export const withState = (
   stateName: string,
   handlerName: string,
-  initialState: <T>(state: KVPair, props: KVPair) => T
-): CustomHook => {
+  initialState: <T>(state: IKVPair, props: IKVPair) => T
+): ICustomHook => {
   const initState = isFunction(initialState)
-    ? (state: KVPair, props: KVPair) => () => initialState(state, props)
+    ? (state: IKVPair, props: IKVPair) => () => initialState(state, props)
     : () => initialState;
 
-  return (state: KVPair, props: KVPair): KVPair => {
+  return (state: IKVPair, props: IKVPair): IKVPair => {
     const [innerState, updater] = useState(initState(state, props));
     return { [stateName]: innerState, [handlerName]: updater };
   };

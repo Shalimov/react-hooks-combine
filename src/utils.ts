@@ -1,9 +1,9 @@
-import { IReactComponent, KVPair, FnCfg } from "./types";
+import { IReactComponent, IKVPair, IFnCfg } from "./types";
 
 const bastToString = Object.prototype.toString;
 
 /**
- *
+ * Retrieves internal constructor type
  * @param value
  */
 const getInternalCtor = (value: any): string =>
@@ -33,16 +33,23 @@ const createIsTypeFunc = (type: string): ((value: any) => boolean) => (
 export const isPromise = createIsTypeFunc("Promise");
 
 /**
+ * Tells whether argument is function
  *
+ * @param {any} value
+ * @return {boolean} whether it's object
  */
 export const isFunction = createIsTypeFunc("Function");
 
 /**
+ * Tells whether argument is object structure
  *
+ * @param {any} value
+ * @return {boolean} whether it's object
  */
 export const isObject = createIsTypeFunc("Object");
 
 /**
+ * Tells whether argument is promise like structure
  *
  * @param value
  */
@@ -50,16 +57,19 @@ export const isLikePromise = (value: any): boolean =>
   isPromise(value) || (isFunction(value?.then) && isFunction(value?.catch));
 
 /**
+ * Tells whether argument is not function
  *
  * @param value
  */
 export const isNotFunction = (value: any): boolean => !isFunction(value);
 
 /**
+ * Tells whether argument is not function
  *
  * @param args
  */
-export const isCombineConfigMode = (args: any[]): boolean => isObject(args[0]);
+export const isCombineConfigMode = (args: IKVPair[]): boolean =>
+  isObject(args[0]);
 
 /**
  *
@@ -68,19 +78,21 @@ export const isCombineConfigMode = (args: any[]): boolean => isObject(args[0]);
 export const identity = <T>(value: T): T => value;
 
 /**
+ *  Unwind loop to line by line invocations of functions
  *
- * @param useCustomHook
- * @param funcDescriptions
+ * @param {(func: IFnCfg<T> | T, deps: string[], state: IKVPair, props: IKVPair) => IKVPair<T>} useCustomHook
+ * @param {IKVPair<IFnCfg<T> | T>} funcDescriptions
+ * @return {(deps: string[], state: IKVPair, props: IKVPair) => IKVPair} function which invokes array of passed functions outside of loop one by one
  */
 export const unwindLoop = <T extends (...args: any[]) => any>(
   useCustomHook: (
-    func: FnCfg<T> | T,
+    func: IFnCfg<T> | T,
     deps: string[],
-    state: KVPair,
-    props: KVPair
-  ) => KVPair<T>,
-  funcDescriptions: KVPair<FnCfg<T> | T>
-): ((deps: string[], state: KVPair, props: KVPair) => KVPair) => {
+    state: IKVPair,
+    props: IKVPair
+  ) => IKVPair<T>,
+  funcDescriptions: IKVPair<IFnCfg<T> | T>
+): ((deps: string[], state: IKVPair, props: IKVPair) => IKVPair) => {
   const FuncCtor = Function;
 
   const invocations = [];
@@ -112,7 +124,7 @@ export const unwindLoop = <T extends (...args: any[]) => any>(
  * @param value
  * @param path
  */
-export const prop = (value: KVPair<any>, path: string): any => {
+export const prop = (value: IKVPair<any>, path: string): any => {
   if (value === undefined) {
     return undefined;
   }
@@ -136,7 +148,7 @@ export const prop = (value: KVPair<any>, path: string): any => {
  * @param depsNames
  */
 export const getDeps = (
-  source: KVPair<any>,
+  source: IKVPair<any>,
   depsNames?: string[]
 ): React.DependencyList => {
   if (depsNames === undefined) {
@@ -158,6 +170,6 @@ export const getDeps = (
  * @param callbacks
  */
 export const enchance = (
-  Component: IReactComponent,
-  ...callbacks: [(component: IReactComponent) => IReactComponent]
+  callbacks: [(component: IReactComponent) => IReactComponent],
+  Component: IReactComponent
 ): IReactComponent => callbacks.reduce(iteratee, Component);

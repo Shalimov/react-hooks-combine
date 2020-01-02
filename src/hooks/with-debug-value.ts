@@ -1,10 +1,10 @@
 import { useDebugValue } from "react";
-import { KVPair, CustomHook } from "../types";
+import { IKVPair, ICustomHook } from "../types";
 
 export const withDebugValue = <T>(
-  valueExtractor: (state?: KVPair, props?: KVPair) => T,
+  valueExtractor: (state?: IKVPair, props?: IKVPair) => T,
   fromatter: (value: T) => any
-): CustomHook => (state: KVPair, props: KVPair): void => {
+): ICustomHook => (state: IKVPair, props: IKVPair): void => {
   const status = valueExtractor(state, props);
   useDebugValue<T>(status, fromatter);
 };
