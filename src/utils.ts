@@ -6,7 +6,7 @@ const bastToString = Object.prototype.toString;
  * Retrieves internal constructor type
  * @param value
  */
-const getInternalCtor = (value: any): string =>
+export const getInternalCtor = (value: any): string =>
   bastToString.call(value).slice(8, -1);
 
 /**

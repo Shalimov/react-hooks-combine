@@ -1,3 +1,16 @@
+export interface IAsyncEffectParams<T> {
+  deps?: string[];
+  dataName?: string;
+  loadingName?: string;
+  errorName?: string;
+  asyncAction(
+    state: IKVPair,
+    props: IKVPair,
+    prevStateProps: { state: IKVPair; props: IKVPair }
+  ): PromiseLike<T>;
+  disposeAction?(): void;
+}
+
 /**
  *
  */
@@ -10,8 +23,8 @@ export interface ICombineConfig {
 /**
  *
  */
-export interface IKVPair<T = any> {
-  [key: string]: T;
+export interface IKVPair<V = any> {
+  [key: string]: V;
 }
 
 /**
