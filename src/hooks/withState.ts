@@ -1,11 +1,7 @@
 import { useState } from "react";
 
-import { IKVPair, ICustomHook } from "../types";
+import { IKVPair, ICustomHook, IInitFunc } from "../types";
 import { isFunction } from "../utils";
-
-interface IInitFunc<S> {
-  (state: IKVPair, props: IKVPair): S
-}
 
 export const withState = <S>(
   stateName: string,
@@ -13,8 +9,9 @@ export const withState = <S>(
   initialState?: S | IInitFunc<S>
 ): ICustomHook => {
   const initState = isFunction(initialState)
-    ? (state: IKVPair, props: IKVPair) => () => (<IInitFunc<S>>initialState)(state, props)
-    : () => initialState as S;
+    ? (state: IKVPair, props: IKVPair) => () =>
+        (<IInitFunc<S>>initialState)(state, props)
+    : () => <S>initialState;
 
   return (state: IKVPair, props: IKVPair): IKVPair => {
     const [innerState, updater] = useState(initState(state, props));

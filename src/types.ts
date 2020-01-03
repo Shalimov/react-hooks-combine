@@ -1,5 +1,12 @@
 /**
- * 
+ *
+ */
+export interface IInitFunc<S> {
+  (state: IKVPair, props: IKVPair): S;
+}
+
+/**
+ *
  */
 export interface IReducerParams<S, A> {
   reducer: (prevState?: S, action?: A) => S;
@@ -10,7 +17,7 @@ export interface IReducerParams<S, A> {
 }
 
 /**
- * 
+ *
  */
 export interface IAsyncEffectParams<T> {
   deps?: string[];
