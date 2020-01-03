@@ -1,3 +1,17 @@
+/**
+ * 
+ */
+export interface IReducerParams<S, A> {
+  reducer: (prevState?: S, action?: A) => S;
+  stateName: string;
+  dispatchName?: string;
+  initialState: S;
+  init: (initialState?: S) => S;
+}
+
+/**
+ * 
+ */
 export interface IAsyncEffectParams<T> {
   deps?: string[];
   dataName?: string;

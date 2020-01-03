@@ -12,7 +12,7 @@ export const createWithEffect = (
     prevStateProps: { state: IKVPair; props: IKVPair }
   ) => () => void,
   dependencies: string[]
-): ICustomHook => (state: IKVPair, props: IKVPair) => {
+): ICustomHook => (state: IKVPair, props: IKVPair): void => {
   const deps = getDeps({ ...state, ...props }, dependencies);
   const referedStateProps = useRef({ state, props });
 

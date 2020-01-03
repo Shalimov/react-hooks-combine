@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { IReactComponent, ICombineConfig, ICustomHook, IKVPair } from "./types";
-import { hookBuilder } from "./hook-builder";
+import { hookBuilder } from "./hookBuilder";
 import { isCombineConfigMode, identity, enchance } from "./utils";
 
 const combineFromConfig = (

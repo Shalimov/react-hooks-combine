@@ -3,11 +3,11 @@ import { useContext } from "react";
 import { IKVPair, ICustomHook } from "../types";
 import { identity } from "../utils";
 
-export const withContext = <T>(
+export const withContext = <C>(
   contextName: string,
-  Context: React.Context<T>,
+  Context: React.Context<C>,
   transform = identity
-): ICustomHook<T> => (): IKVPair<T> => {
+): ICustomHook<C> => (): IKVPair<C> => {
   const context = useContext(Context);
   return { [contextName]: transform(context) };
 };

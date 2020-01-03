@@ -1,3 +1,3 @@
-export { hookBuilder as pipe } from "./hook-builder";
+export { hookBuilder as pipe } from "./hookBuilder";
 // export * from './combine'
 export * from "./hooks";
