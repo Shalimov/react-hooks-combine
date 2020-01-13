@@ -1,9 +1,10 @@
-import React from 'react'
+import * as React from 'react'
 import { create, act } from 'react-test-renderer'
 import { repeatScenario } from '../utils'
-import { withAsyncEffect, withMemo, withCallback, combine } from '../../src';
+import { withAsyncEffect, withMemo, withCallback} from '../../src';
+import {combine} from '../../src/combine';
 
-const mockData = (multiplier = 1) => [
+const mockData = (multiplier:number = 1) => [
   {
     id: 1,
     count: 4 * multiplier,
@@ -24,12 +25,12 @@ const mockData = (multiplier = 1) => [
     id: 5,
     count: 1 * multiplier,
   },
-]
+];
 
 const asyncAction = (_, { multiplier }) => ({
   then: (resolve) => resolve(mockData(multiplier)),
   catch: () => {},
-})
+});
 
 describe('Async Hook Integration', () => {
   test(`
@@ -42,10 +43,10 @@ describe('Async Hook Integration', () => {
     /* eslint-disable-next-line */
     const Component = ({ count: { count } }) => (
       <div>{count}</div>
-    )
+    );
 
-    let EnhancedComponent = null
-    let renderer = null
+    let EnhancedComponent = null;
+    let renderer = null;
 
     act(() => {
       EnhancedComponent = combine({
@@ -58,32 +59,32 @@ describe('Async Hook Integration', () => {
           withMemo(
             'count',
             ({ data }) => {
-              const sum = (data || []).reduce((count, item) => count + item.count, 0)
+              const sum = (data || []).reduce((count, item) => count + item.count, 0);
               return { count: sum }
             },
             ['multiplier']
           ),
           withCallback('getCount', ({ count }) => () => count.count, ['multiplier', 'count']),
         ],
-      })(Component)
+      })(Component);
 
       renderer = create(<EnhancedComponent multiplier={1} />)
-    })
+    });
 
-    const updateComponent = () => renderer.update(<EnhancedComponent multiplier={1} />)
-    act(() => updateComponent())
+    const updateComponent = () => renderer.update(<EnhancedComponent multiplier={1} />);
+    act(() => updateComponent());
 
     repeatScenario(10, () => {
-      const prevProps = renderer.root.children[0].props
+      const prevProps = renderer.root.children[0].props;
 
-      act(() => updateComponent())
+      act(() => updateComponent());
 
-      const nextProps = renderer.root.children[0].props
-      expect(prevProps.data).toEqual(nextProps.data)
-      expect(prevProps.count).toEqual(nextProps.count)
+      const nextProps = renderer.root.children[0].props;
+      expect(prevProps.data).toEqual(nextProps.data);
+      expect(prevProps.count).toEqual(nextProps.count);
       expect(prevProps.getCount).toEqual(nextProps.getCount)
     })
-  })
+  });
 
   test(`
   Creates custom hook to control counter state
@@ -95,8 +96,8 @@ describe('Async Hook Integration', () => {
       <div>{count}</div>
     )
 
-    let EnhancedComponent = null
-    let renderer = null
+    let EnhancedComponent = null;
+    let renderer = null;
 
     act(() => {
       EnhancedComponent = combine({
@@ -112,21 +113,21 @@ describe('Async Hook Integration', () => {
             ['data', 'multiplier']
           ),
         ],
-      })(Component)
+      })(Component);
 
       renderer = create(<EnhancedComponent multiplier={0} />)
-    })
+    });
 
-    const updateComponent = (multiplier) => renderer.update(<EnhancedComponent multiplier={multiplier} />)
+    const updateComponent = (multiplier) => renderer.update(<EnhancedComponent multiplier={multiplier} />);
 
     repeatScenario(10, (i) => {
-      const prevProps = renderer.root.children[0].props
+      const prevProps = renderer.root.children[0].props;
 
-      act(() => updateComponent(i + 1))
+      act(() => updateComponent(i + 1));
 
-      const nextProps = renderer.root.children[0].props
-      expect(prevProps.count).toBe(nextProps.count - 30)
+      const nextProps = renderer.root.children[0].props;
+      expect(prevProps.count).toBe(nextProps.count - 30);
       expect(prevProps.data).not.toEqual(nextProps.data)
     })
   })
-})
+});

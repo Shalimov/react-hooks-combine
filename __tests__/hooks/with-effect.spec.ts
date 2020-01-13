@@ -1,20 +1,23 @@
-import { renderHook } from '@testing-library/react-hooks'
-import { withEffect } from '../../src/hooks'
+import { renderHook } from "@testing-library/react-hooks";
+import { withEffect } from "../../src/hooks";
+import { IKVPair } from "../../src/types";
 
+describe("With Effect hook", () => {
+  test("should call side effects when mounting, updating and unmounting", () => {
+    const sideEffects: any = { 1: false, 2: false };
 
-describe('With Effect hook', () => {
-  test('should call side effects when mounting, updating and unmounting', () => {
-    const sideEffects = { 1: false, 2: false };
+    const useHook = (state: IKVPair<any>, props: IKVPair<any>) => {
+      sideEffects[props.id] = true;
+      return () => {
+        sideEffects[props.id] = false;
+      };
+    };
 
-    const { unmount, rerender } = renderHook(
-      ({ id }) => withEffect(() => {
-        sideEffects[id] = true
-        return () => {
-          sideEffects[id] = false
-        }
-      }, ['id'])({}, { id }),
-      { initialProps: { id: 1 } }
-    );
+    const wEff = withEffect(useHook, ["id"]);
+
+    const { unmount, rerender } = renderHook(({ id }) => wEff({}, { id }), {
+      initialProps: { id: 1 }
+    });
 
     expect(sideEffects[1]).toBe(true);
     expect(sideEffects[2]).toBe(false);
@@ -31,23 +34,31 @@ describe('With Effect hook', () => {
 
     unmount();
 
-    expect(sideEffects[1]).toBe(false)
-    expect(sideEffects[2]).toBe(false)
+    expect(sideEffects[1]).toBe(false);
+    expect(sideEffects[2]).toBe(false);
   });
 
-  test('should call side effects when mounting, updating and unmounting', () => {
-    const sideEffects = { currProps: null, prevProps: null };
+  test("should call side effects when mounting, updating and unmounting", () => {
+    const sideEffects: any = { currProps: null, prevProps: null };
 
-    const { rerender } = renderHook(
-      ({ id }) => withEffect((state, props, { props: prevProps }) => {
-
+    const useHook = (
+      state: IKVPair<any>,
+      props: IKVPair<any>,
+      prevStateProps: { state: IKVPair<any>; props: IKVPair<any> }
+    ) => {
+      sideEffects.currProps = props;
+      sideEffects.prevProps = prevStateProps.props;
+      return () => {
         sideEffects.currProps = props;
-        sideEffects.prevProps = prevProps
+        sideEffects.prevProps = prevStateProps.props;
+      };
+    };
 
-      }, ['id'])({}, { id }),
-      { initialProps: { id: 1 } }
-    );
+    const wEff = withEffect(useHook, ["id"]);
 
+    const { rerender } = renderHook(({ id }) => wEff({}, { id }), {
+      initialProps: { id: 1 }
+    });
 
     expect(sideEffects.currProps.id).toBe(1);
     expect(sideEffects.prevProps.id).toBe(1);
@@ -60,6 +71,6 @@ describe('With Effect hook', () => {
     rerender({ id: 3 });
 
     expect(sideEffects.currProps.id).toBe(3);
-    expect(sideEffects.prevProps.id).toBe(2)
-  })
+    expect(sideEffects.prevProps.id).toBe(2);
+  });
 });

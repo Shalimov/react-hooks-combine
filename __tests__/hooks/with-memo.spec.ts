@@ -34,21 +34,20 @@ describe("With Memo hook", () => {
   });
 
   test("should use memos hook with configs", () => {
-    let value = 1;
     const funcs: IKVPair<IFnCfg<MemoFunc> | MemoFunc> = {
       memoValue1: {
         deps: ["value"],
-        func: () => ({ value })
+        func: (_state, { value }) => ({ value })
       },
       memoValue2: {
         deps: ["value"],
-        func: () => ({ value: value * 2 })
+        func: (_state, { value }) => ({ value: value * 2 })
       }
     };
 
     const wm = withMemos(funcs, ["value"]);
 
-    const { result, rerender } = renderHook(({ value }) => wm({},{value}), {
+    const { result, rerender } = renderHook(({ value }) => wm({}, { value }), {
       initialProps: { value: 1 }
     });
 
