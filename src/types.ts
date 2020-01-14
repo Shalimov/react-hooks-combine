@@ -13,7 +13,7 @@ export interface IReducerParams<S, A> {
   stateName: string;
   dispatchName?: string;
   initialState: S;
-  init: (initialState?: S) => S;
+  init?: (initialState?: S) => S;
 }
 
 /**
@@ -59,8 +59,8 @@ export interface IFnCfg<T> {
 /**
  *
  */
-export interface ICustomHook<T = any> {
-  (state?: IKVPair<T>, props?: IKVPair<T>): IKVPair<T> | void;
+export interface ICustomHook<T = any, R = IKVPair<T>> {
+    (state?: IKVPair<T>, props?: IKVPair<T>): R;
 }
 
 /**

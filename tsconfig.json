@@ -3,10 +3,13 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": true,
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es6",
     "jsx": "react",
     "removeComments": true,
-    "alwaysStrict": true
+    "alwaysStrict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "lib": ["es5", "es6", "dom", "dom.iterable"]
   }
 }

@@ -7,3 +7,5 @@ export { withMemo, withMemos } from "./withMemo";
 export { withContext } from "./withContext";
 export { withState } from "./withState";
 export { withRef } from "./withRef";
+export { withReducer } from "./withReducer";
+export { withStateHandlers } from "./withStateHandlers";

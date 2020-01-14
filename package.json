@@ -45,17 +45,20 @@
     "test:coverage": "jest --coverage",
     "eslint": "./node_modules/eslint/bin/eslint.js",
     "lint": "yarn eslint ./src",
-    "lint:fix": "yarn eslint ./src --fix"
+    "lint:fix": "yarn eslint ./src --fix",
+    "rollup": "rollup --config"
   },
   "peerDependencies": {
     "react": "^16.8.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.4",
+    "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
+    "@betit/rollup-plugin-rename-extensions": "^0.1.0",
     "@testing-library/react-hooks": "^2.0.1",
-    "@types/jest": "^24.0.12",
+    "@types/jest": "^24.0.25",
+    "@typescript-eslint/eslint-plugin": "^2.15.0",
     "babel-jest": "^24.7.1",
     "eslint": "6.3.0",
     "eslint-config-airbnb": "18.0.1",
@@ -72,8 +75,12 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-peer-deps-external": "^2.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
     "rollup-plugin-typescript2": "^0.25.3",
     "rollup-plugin-uglify": "^6.0.2",
+    "ts-jest": "^24.3.0",
+    "ts-node": "^8.5.4",
+    "tslib": "^1.10.0",
     "typescript": "^3.7.4"
   },
   "dependencies": {}
