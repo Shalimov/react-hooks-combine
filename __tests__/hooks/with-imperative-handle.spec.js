@@ -16,10 +16,9 @@ describe('Imperative handle', () => {
       return action === INCREMENT ? state + 1 : state;
     }
     // eslint-disable-next-line
-    const Counter = ({ count }, ref) => (<span ref={ref}>{count}</span>)
+    const Counter = React.forwardRef(({ count }, ref) => (<span ref={ref}>{count}</span>))
 
-    const CombineCounter = combine({
-      forwardRef: true,
+    const CombineCounter = React.forwardRef(combine({
       hooks: [
         withReducer({
           reducer,
@@ -28,7 +27,7 @@ describe('Imperative handle', () => {
         }),
         withImperativeHandle(({ dispatch }) => ({ dispatch }), ['count']),
       ],
-    })(Counter)
+    })(Counter))
 
     const counterRef = React.createRef(null);
     const render = create(<CombineCounter ref={counterRef} />);

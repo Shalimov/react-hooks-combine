@@ -5,9 +5,7 @@ import {
   isCombineConfigMode,
   prop,
   getDeps,
-  defaultProps,
-  identity,
-  enchance
+  identity
 } from '../src/utils'
 
 describe('Utils', () => {
@@ -151,27 +149,6 @@ describe('Utils', () => {
   })
 
   test(`
-    Check defaultProps function to return the same provided Component with defaultProps property
-      - check with falsy param should return Component without defaultProps property
-      - check with props object should return Component with defaultProps property
-  `, () => {
-    function Component() {
-      return null
-    }
-
-    const props = {
-      name: 'name',
-      surname: 'surname',
-      age: 20,
-    }
-
-    expect(defaultProps(null, Component)).toEqual(Component)
-    expect(defaultProps(null, Component).defaultProps).toBe(null)
-
-    expect(defaultProps(props, Component).defaultProps).toEqual(props)
-  })
-
-  test(`
     Check identity function to return the same value as a param
       - check with empty param should return undefined
       - check with promitive values should return the same values
@@ -195,48 +172,5 @@ describe('Utils', () => {
     expect(identity(values.key4)).toBe(values.key4)
     expect(identity(values.key5)).toBe(values.key5)
     expect(identity(values.key6)).toBe(values.key6)
-  })
-
-  test(`
-    Check flow function to transform or inject some props to Component
-      - check with custom enhancer that inject property to Component function should return changed Component
-      - check enhancer should be called with Component param
-      - check all enhancers should be applied consistently to the component
-  `, () => {
-    const enhancer = (Component) => {
-      // eslint-disable-next-line
-      Component.enhanced = true
-
-      return Component
-    }
-
-    const enhancer1 = (Component) => {
-      // eslint-disable-next-line
-      Component.enhanced1 = true
-
-      return Component
-    }
-
-    const enhancer2 = (propName, propValue) => (Component) => {
-      // eslint-disable-next-line
-      Component[propName] = propValue
-
-      return Component
-    }
-
-    function InitComponent() {
-      return null
-    }
-
-    const EnhancedComponent = enchance(
-      InitComponent,
-      enhancer,
-      enhancer1,
-      enhancer2('loading', true)
-    )
-
-    expect(EnhancedComponent.enhanced).toBe(true)
-    expect(EnhancedComponent.enhanced1).toBe(true)
-    expect(EnhancedComponent.loading).toBe(true)
   })
 })

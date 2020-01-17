@@ -1,12 +1,3 @@
-
-# __Disclamer:__
-```
-Master contains v2 of react-hooks-combine which is written on TS
-This version is not fully documented and work on it in progress
-Expectations are the following: migration and changes will have been accomplished by the end of Junary
-Meanwhile, pls, use latest version of it: 1.7.2
-```
-
 # React hooks combine
 
 [Hooks](https://reactjs.org/docs/hooks-intro.html) powered, recompose like utility belt for ladies and gentlemen.
